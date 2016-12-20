@@ -33,7 +33,7 @@
 
 ## External Libraries
 
-These external libraries are used within this solution. Many thanks to the authors!
+These external library are used within this solution. A tip of the hat to Michael Bostock for the fantastic D3 library.
 
 **D3**
 * Name: D3
