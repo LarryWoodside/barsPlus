@@ -1,0 +1,14 @@
+{
+	"name" : "BarsPlus",
+	"description" : "Bar chart using AngularJS and D3",
+	"preview": "barsPlus.png",
+	"icon": "bar-chart-vertical",
+	"type" : "visualization",
+	"version": "1.0.0",
+	"author": "Larry Woodside",
+	"homepage" : "http://help.qlik.com/sense/en-US/developer",
+	"keywords" : "qlik-sense, visualization, D3, AngularJS, Bar Chart, Stacked Bar Chart, Area Chart, Transitions, Legend, Tooltips",
+	"license" : "MIT",
+	"repository" : "",
+    "dependencies" : { "qlik-sense" : ">=2.1.x" }
+}

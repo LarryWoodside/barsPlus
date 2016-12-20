@@ -1,0 +1,71 @@
+.qv-object-barsPlus
+	.ldwaxis path, 
+	.ldwaxis line {
+		fill: none;
+		stroke: black;
+		shape-rendering: crispEdges;
+	}
+.qv-object-barsPlus
+	.ldwaxis {
+		font-family: sans-serif;
+		font-size: 12px;
+	}
+.qv-object-barsPlus
+	.ldwaxis .axisTitle {
+		font-family: sans-serif;
+		font-size: 12px;
+	}
+.qv-object-barsPlus
+	.ldwaxis .tick line {
+		opacity: 0.2;
+	}
+.qv-object-barsPlus
+	.ldwbar.selected {
+		stroke: black;
+		stroke-width: 2px;
+	}
+.qv-object-barsPlus
+	.ldwlegend text {
+		font-family: sans-serif;
+		font-size: 12px;
+		fill: #777;
+	}
+.qv-object-barsPlus
+	.ldwtooltip {
+		position: fixed;
+		padding: 5px;
+		width: auto;
+		background-color: #404040;
+		border-radius: 5px;
+		z-index: 10;
+		pointer-events: none;
+	}
+.qv-object-barsPlus
+	.ldwtooltip::after {
+		content: "";
+		position: absolute;
+		bottom: -10px;
+		left: 50%;
+		border-width: 10px 10px 0;
+		border-style: solid;
+		border-color: #404040 transparent;
+		margin-left: -10px;
+		pointer-events: none;
+	}
+.qv-object-barsPlus
+	.ldwtooltip .ldwttheading {
+		margin: 5px;
+		font-family: sans-serif;
+		font-size: 13px;
+		font-weight: bold;
+		line-height: 18px;
+		color: white;
+	}
+.qv-object-barsPlus
+	.ldwtooltip .ldwttvalue {
+		margin: 5px;
+		font-family: sans-serif;
+		font-size: 13px;
+		line-height: 18px;
+		color: white;
+	}

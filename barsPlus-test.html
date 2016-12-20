@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html ng-app="barsPlusApp">
+	<head>
+	<!--
+		barsPlus Test Application
+		 
+		Used to quickly test new features without Qlik Sense
+
+		Author: L. Woodside
+		Modification History:
+
+		Version		Person			Date			Description
+		V1.0.0		L. Woodside		19-Dec-2016		Initial Release
+	-->
+	<meta charset="utf-8">
+    <title>Bars Plus Test Application</title>
+	<script src="lib/jquery.js"></script>
+    <script src="lib/angular.js"></script>
+    <script src="lib/d3.v3.js"></script>
+	<!--script src="https://d3js.org/d3-format.v1.min.js"></script-->
+	<script src="ldw-barsPlus.js"></script>
+	<link href="barsPlus.css" rel="stylesheet" />
+    <script>
+        angular.module("barsPlusApp", [])
+			.directive("barsPlus", function() {
+				return {
+					link: function(scope, element, attrs) {
+					
+						var g = scope.g;
+						
+						g.nDims = 2;
+
+						g.id = scope.id;
+						g.component = d3.select(element[0]).attr("id",g.id);
+
+						g.rawData = scope.data;
+						g.width = element.parent().width();
+						g.height = element.parent().height();
+						g.inSelections = false;
+						g.editMode = false;
+
+						g.axisTitleD = attrs["axisTitleD"];
+						g.axisTitleM = attrs["axisTitleM"];
+						g.selectionMode = null;
+						g.orientation = attrs["orientation"];
+						g.normalized = attrs["normalized"];
+						g.showDeltas = attrs["showDeltas"];
+						g.barGap = attrs["barGap"];
+						g.outerGap = attrs["outerGap"];
+						g.gridHeight = attrs["gridHeight"];
+
+						g.backgroundColor = attrs["backgroundColor"];
+						g.colorScheme = attrs["colorScheme"];
+						g.colorOffset = attrs["colorOffset"];
+						g.showLegend = attrs["showLegend"];
+						g.legendPosition = attrs["legendPosition"];
+						g.legendSize = attrs["legendSize"];
+						g.legendSpacing = attrs["legendSpacing"];
+
+						g.labelTitleD = attrs["labelTitleD"];
+						g.labelStyleD = attrs["labelStyleD"];
+						g.gridlinesD = attrs["gridlinesD"];
+						g.axisMarginD = attrs["axisMarginD"];
+
+						g.labelTitleM = attrs["labelTitleM"];
+						g.labelStyleM = attrs["labelStyleM"];
+						g.gridlinesM = attrs["gridlinesM"];
+						g.axisMarginM = attrs["axisMarginM"];
+						g.ticks = attrs["ticks"];
+						g.axisFormatM = attrs["axisFormatM"];
+						g.axisFormatMs = attrs["axisFormatMs"];
+
+						g.transitions = attrs["transitions"];
+						g.transitionDelay = attrs["transitionDelay"];
+						g.transitionDuration = attrs["transitionDuration"];
+						g.ease = attrs["ease"];
+
+						g.initData()
+						g.initChart();
+						g.createBars();
+						g.updateBars();
+
+						scope.$watch(function() { return scope.data; }, function(newValue, oldValue) {
+							if(newValue != oldValue) {
+								g.rawData = newValue;
+								g.initData();
+								g.updateBars();
+							}
+						});
+						scope.$watch(
+							function () {
+								return element.parent().width() + "," + element.parent().height();
+							}
+							,function(newValue, oldValue) {
+								if (newValue != oldValue) {
+									var t = newValue.split(",");
+									g.width = t[0];
+									g.height = t[1];
+									g.refreshChart();
+								}
+							}
+						);
+					},
+					restrict: "EA"
+				}
+			})
+            .controller("barsPlusCtrl", function ($scope) {
+			
+				$scope.data1 = [
+[{qText: "2012"},{qText: "January"},{qNum: 8216557.69190588, qText: "$8,216,558"}],
+[{qText: "2012"},{qText: "February"},{qNum: 1678886.09688421, qText: "$1,678,886"}],
+[{qText: "2012"},{qText: "March"},{qNum: 6758411.77090081, qText: "$6,758,412"}],
+[{qText: "2012"},{qText: "April"},{qNum: 6729177.19344021, qText: "$6,729,177"}],
+[{qText: "2012"},{qText: "May"},{qNum: 4159811.50180759, qText: "$4,159,812"}],
+[{qText: "2012"},{qText: "June"},{qNum: 8560140.74739407, qText: "$8,560,141"}],
+[{qText: "2012"},{qText: "July"},{qNum: 4697270.2069956, qText: "$4,697,270"}],
+[{qText: "2012"},{qText: "August"},{qNum: 3489857.30752409, qText: "$3,489,857"}],
+[{qText: "2012"},{qText: "September"},{qNum: 2824329.15692809, qText: "$2,824,329"}],
+[{qText: "2012"},{qText: "October"},{qNum: 2983824.00025901, qText: "$2,983,824"}],
+[{qText: "2012"},{qText: "November"},{qNum: 6986288.34865222, qText: "$6,986,288"}],
+[{qText: "2012"},{qText: "December"},{qNum: 7454911.27700937, qText: "$7,454,911"}],
+[{qText: "2013"},{qText: "January"},{qNum: 3314225.12057077, qText: "$3,314,225"}],
+[{qText: "2013"},{qText: "February"},{qNum: 3867154.15686122, qText: "$3,867,154"}],
+[{qText: "2013"},{qText: "March"},{qNum: 1011947.68735133, qText: "$1,011,948"}],
+[{qText: "2013"},{qText: "April"},{qNum: 1867014.07439439, qText: "$1,867,014"}],
+[{qText: "2013"},{qText: "May"},{qNum: 1764771.31740971, qText: "$1,764,771"}],
+[{qText: "2013"},{qText: "June"},{qNum: 862750.253627517, qText: "$862,750"}],
+[{qText: "2013"},{qText: "July"},{qNum: 913397.900057612, qText: "$913,398"}],
+[{qText: "2013"},{qText: "August"},{qNum: 4676667.32773313, qText: "$4,676,667"}],
+[{qText: "2013"},{qText: "September"},{qNum: 4243298.84827118, qText: "$4,243,299"}],
+[{qText: "2013"},{qText: "October"},{qNum: 3261345.35070393, qText: "$3,261,345"}],
+[{qText: "2013"},{qText: "November"},{qNum: 4585937.24398727, qText: "$4,585,937"}],
+[{qText: "2013"},{qText: "December"},{qNum: 8394006.77426958, qText: "$8,394,007"}],
+[{qText: "2014"},{qText: "January"},{qNum: 3629869.1227932, qText: "$3,629,869"}],
+[{qText: "2014"},{qText: "February"},{qNum: 4868528.6192228, qText: "$4,868,529"}],
+[{qText: "2014"},{qText: "March"},{qNum: 7994277.17648903, qText: "$7,994,277"}],
+[{qText: "2014"},{qText: "April"},{qNum: 5613472.82381715, qText: "$5,613,473"}],
+[{qText: "2014"},{qText: "May"},{qNum: 9349416.12414852, qText: "$9,349,416"}],
+[{qText: "2014"},{qText: "June"},{qNum: 8562993.81943293, qText: "$8,562,994"}],
+[{qText: "2014"},{qText: "July"},{qNum: 3952543.22520447, qText: "$3,952,543"}],
+[{qText: "2014"},{qText: "August"},{qNum: 229211.142056127, qText: "$229,211"}],
+[{qText: "2014"},{qText: "September"},{qNum: 8891693.83611183, qText: "$8,891,694"}],
+[{qText: "2014"},{qText: "October"},{qNum: 8228404.96214335, qText: "$8,228,405"}],
+[{qText: "2014"},{qText: "November"},{qNum: 7652107.51751796, qText: "$7,652,108"}],
+[{qText: "2014"},{qText: "December"},{qNum: 6149863.60229994, qText: "$6,149,864"}],
+[{qText: "2015"},{qText: "January"},{qNum: 5401003.32575476, qText: "$5,401,003"}],
+[{qText: "2015"},{qText: "February"},{qNum: 5944557.95218427, qText: "$5,944,558"}],
+[{qText: "2015"},{qText: "March"},{qNum: 4271294.56476552, qText: "$4,271,295"}],
+[{qText: "2015"},{qText: "April"},{qNum: 4647022.10818538, qText: "$4,647,022"}],
+[{qText: "2015"},{qText: "May"},{qNum: 8412908.19255074, qText: "$8,412,908"}],
+[{qText: "2015"},{qText: "June"},{qNum: 7584710.30920053, qText: "$7,584,710"}],
+[{qText: "2015"},{qText: "July"},{qNum: 9947782.2866718, qText: "$9,947,782"}],
+[{qText: "2015"},{qText: "August"},{qNum: 8636768.2887174, qText: "$8,636,768"}],
+[{qText: "2015"},{qText: "September"},{qNum: 7954602.59199595, qText: "$7,954,603"}],
+[{qText: "2015"},{qText: "October"},{qNum: 3121701.48537651, qText: "$3,121,701"}],
+[{qText: "2015"},{qText: "November"},{qNum: 9591810.38999614, qText: "$9,591,810"}],
+[{qText: "2015"},{qText: "December"},{qNum: 672421.36822655, qText: "$672,421"}],
+[{qText: "2016"},{qText: "January"},{qNum: 8051617.27701702, qText: "$8,051,617"}],
+[{qText: "2016"},{qText: "February"},{qNum: 3627826.00209702, qText: "$3,627,826"}],
+[{qText: "2016"},{qText: "March"},{qNum: 9480785.76305856, qText: "$9,480,786"}],
+[{qText: "2016"},{qText: "April"},{qNum: 7755676.00135768, qText: "$7,755,676"}],
+[{qText: "2016"},{qText: "May"},{qNum: 1332579.30788357, qText: "$1,332,579"}],
+[{qText: "2016"},{qText: "June"},{qNum: 2405967.80233637, qText: "$2,405,968"}],
+				];
+
+$scope.data1 = 
+[
+   [
+      {
+         "qText":"2003",
+         "qNum":2003,
+         "qElemNumber":0,
+         "qState":"O"
+      },
+      {
+         "qText":"Jan",
+         "qNum":"NaN",
+         "qElemNumber":6,
+         "qState":"O"
+      },
+      {
+         "qText":"1756407.005206",
+         "qNum":1756407.005205989,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2003",
+         "qNum":2003,
+         "qElemNumber":0,
+         "qState":"O"
+      },
+      {
+         "qText":"Feb",
+         "qNum":"NaN",
+         "qElemNumber":7,
+         "qState":"O"
+      },
+      {
+         "qText":"2873936.926443",
+         "qNum":2873936.9264430115,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2003",
+         "qNum":2003,
+         "qElemNumber":0,
+         "qState":"O"
+      },
+      {
+         "qText":"Mar",
+         "qNum":"NaN",
+         "qElemNumber":8,
+         "qState":"O"
+      },
+      {
+         "qText":"2049529.873304",
+         "qNum":2049529.8733039862,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2003",
+         "qNum":2003,
+         "qElemNumber":0,
+         "qState":"O"
+      },
+      {
+         "qText":"Apr",
+         "qNum":"NaN",
+         "qElemNumber":9,
+         "qState":"O"
+      },
+      {
+         "qText":"2371677.699280",
+         "qNum":2371677.6992800036,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2003",
+         "qNum":2003,
+         "qElemNumber":0,
+         "qState":"O"
+      },
+      {
+         "qText":"May",
+         "qNum":"NaN",
+         "qElemNumber":10,
+         "qState":"O"
+      },
+      {
+         "qText":"3443525.244935",
+         "qNum":3443525.244935011,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2003",
+         "qNum":2003,
+         "qElemNumber":0,
+         "qState":"O"
+      },
+      {
+         "qText":"Jun",
+         "qNum":"NaN",
+         "qElemNumber":11,
+         "qState":"O"
+      },
+      {
+         "qText":"2542671.934499",
+         "qNum":2542671.9344990086,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2003",
+         "qNum":2003,
+         "qElemNumber":0,
+         "qState":"O"
+      },
+      {
+         "qText":"Jul",
+         "qNum":"NaN",
+         "qElemNumber":0,
+         "qState":"O"
+      },
+      {
+         "qText":"3554092.316679",
+         "qNum":3554092.316679237,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2003",
+         "qNum":2003,
+         "qElemNumber":0,
+         "qState":"O"
+      },
+      {
+         "qText":"Aug",
+         "qNum":"NaN",
+         "qElemNumber":1,
+         "qState":"O"
+      },
+      {
+         "qText":"5068341.511597",
+         "qNum":5068341.511596655,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2003",
+         "qNum":2003,
+         "qElemNumber":0,
+         "qState":"O"
+      },
+      {
+         "qText":"Sep",
+         "qNum":"NaN",
+         "qElemNumber":2,
+         "qState":"O"
+      },
+      {
+         "qText":"5059473.217795",
+         "qNum":5059473.217794676,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2003",
+         "qNum":2003,
+         "qElemNumber":0,
+         "qState":"O"
+      },
+      {
+         "qText":"Oct",
+         "qNum":"NaN",
+         "qElemNumber":3,
+         "qState":"O"
+      },
+      {
+         "qText":"3364506.257556",
+         "qNum":3364506.2575557283,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2003",
+         "qNum":2003,
+         "qElemNumber":0,
+         "qState":"O"
+      },
+      {
+         "qText":"Nov",
+         "qNum":"NaN",
+         "qElemNumber":4,
+         "qState":"O"
+      },
+      {
+         "qText":"4683867.045304",
+         "qNum":4683867.045303716,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2003",
+         "qNum":2003,
+         "qElemNumber":0,
+         "qState":"O"
+      },
+      {
+         "qText":"Dec",
+         "qNum":"NaN",
+         "qElemNumber":5,
+         "qState":"O"
+      },
+      {
+         "qText":"5243008.129803",
+         "qNum":5243008.129802935,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2004",
+         "qNum":2004,
+         "qElemNumber":1,
+         "qState":"O"
+      },
+      {
+         "qText":"Jan",
+         "qNum":"NaN",
+         "qElemNumber":6,
+         "qState":"O"
+      },
+      {
+         "qText":"3009197.415588",
+         "qNum":3009197.4155875226,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2004",
+         "qNum":2004,
+         "qElemNumber":1,
+         "qState":"O"
+      },
+      {
+         "qText":"Feb",
+         "qNum":"NaN",
+         "qElemNumber":7,
+         "qState":"O"
+      },
+      {
+         "qText":"4167855.429602",
+         "qNum":4167855.4296018034,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2004",
+         "qNum":2004,
+         "qElemNumber":1,
+         "qState":"O"
+      },
+      {
+         "qText":"Mar",
+         "qNum":"NaN",
+         "qElemNumber":8,
+         "qState":"O"
+      },
+      {
+         "qText":"4221323.432554",
+         "qNum":4221323.432553816,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2004",
+         "qNum":2004,
+         "qElemNumber":1,
+         "qState":"O"
+      },
+      {
+         "qText":"Apr",
+         "qNum":"NaN",
+         "qElemNumber":9,
+         "qState":"O"
+      },
+      {
+         "qText":"3820583.492071",
+         "qNum":3820583.4920708947,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2004",
+         "qNum":2004,
+         "qElemNumber":1,
+         "qState":"O"
+      },
+      {
+         "qText":"May",
+         "qNum":"NaN",
+         "qElemNumber":10,
+         "qState":"O"
+      },
+      {
+         "qText":"5194121.522905",
+         "qNum":5194121.522904999,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2004",
+         "qNum":2004,
+         "qElemNumber":1,
+         "qState":"O"
+      },
+      {
+         "qText":"Jun",
+         "qNum":"NaN",
+         "qElemNumber":11,
+         "qState":"O"
+      },
+      {
+         "qText":"5364840.179339",
+         "qNum":5364840.179339007,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2004",
+         "qNum":2004,
+         "qElemNumber":1,
+         "qState":"O"
+      },
+      {
+         "qText":"Jul",
+         "qNum":"NaN",
+         "qElemNumber":0,
+         "qState":"O"
+      },
+      {
+         "qText":"50840.630000",
+         "qNum":50840.62999999974,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2002",
+         "qNum":2002,
+         "qElemNumber":2,
+         "qState":"O"
+      },
+      {
+         "qText":"Jan",
+         "qNum":"NaN",
+         "qElemNumber":6,
+         "qState":"O"
+      },
+      {
+         "qText":"1309863.251140",
+         "qNum":1309863.2511400015,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2002",
+         "qNum":2002,
+         "qElemNumber":2,
+         "qState":"O"
+      },
+      {
+         "qText":"Feb",
+         "qNum":"NaN",
+         "qElemNumber":7,
+         "qState":"O"
+      },
+      {
+         "qText":"2451605.624358",
+         "qNum":2451605.624357999,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2002",
+         "qNum":2002,
+         "qElemNumber":2,
+         "qState":"O"
+      },
+      {
+         "qText":"Mar",
+         "qNum":"NaN",
+         "qElemNumber":8,
+         "qState":"O"
+      },
+      {
+         "qText":"2099415.615800",
+         "qNum":2099415.6157999993,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2002",
+         "qNum":2002,
+         "qElemNumber":2,
+         "qState":"O"
+      },
+      {
+         "qText":"Apr",
+         "qNum":"NaN",
+         "qElemNumber":9,
+         "qState":"O"
+      },
+      {
+         "qText":"1546592.229180",
+         "qNum":1546592.2291800014,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2002",
+         "qNum":2002,
+         "qElemNumber":2,
+         "qState":"O"
+      },
+      {
+         "qText":"May",
+         "qNum":"NaN",
+         "qElemNumber":10,
+         "qState":"O"
+      },
+      {
+         "qText":"2942672.909428",
+         "qNum":2942672.9094280056,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2002",
+         "qNum":2002,
+         "qElemNumber":2,
+         "qState":"O"
+      },
+      {
+         "qText":"Jun",
+         "qNum":"NaN",
+         "qElemNumber":11,
+         "qState":"O"
+      },
+      {
+         "qText":"1678567.416532",
+         "qNum":1678567.4165319994,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2002",
+         "qNum":2002,
+         "qElemNumber":2,
+         "qState":"O"
+      },
+      {
+         "qText":"Jul",
+         "qNum":"NaN",
+         "qElemNumber":0,
+         "qState":"O"
+      },
+      {
+         "qText":"2894054.677938",
+         "qNum":2894054.677938009,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2002",
+         "qNum":2002,
+         "qElemNumber":2,
+         "qState":"O"
+      },
+      {
+         "qText":"Aug",
+         "qNum":"NaN",
+         "qElemNumber":1,
+         "qState":"O"
+      },
+      {
+         "qText":"4147192.183951",
+         "qNum":4147192.183951016,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2002",
+         "qNum":2002,
+         "qElemNumber":2,
+         "qState":"O"
+      },
+      {
+         "qText":"Sep",
+         "qNum":"NaN",
+         "qElemNumber":2,
+         "qState":"O"
+      },
+      {
+         "qText":"3235826.189971",
+         "qNum":3235826.1899710195,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2002",
+         "qNum":2002,
+         "qElemNumber":2,
+         "qState":"O"
+      },
+      {
+         "qText":"Oct",
+         "qNum":"NaN",
+         "qElemNumber":3,
+         "qState":"O"
+      },
+      {
+         "qText":"2217544.445625",
+         "qNum":2217544.445624994,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2002",
+         "qNum":2002,
+         "qElemNumber":2,
+         "qState":"O"
+      },
+      {
+         "qText":"Nov",
+         "qNum":"NaN",
+         "qElemNumber":4,
+         "qState":"O"
+      },
+      {
+         "qText":"3388911.414685",
+         "qNum":3388911.4146850132,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2002",
+         "qNum":2002,
+         "qElemNumber":2,
+         "qState":"O"
+      },
+      {
+         "qText":"Dec",
+         "qNum":"NaN",
+         "qElemNumber":5,
+         "qState":"O"
+      },
+      {
+         "qText":"2762527.215017",
+         "qNum":2762527.2150170123,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2001",
+         "qNum":2001,
+         "qElemNumber":3,
+         "qState":"O"
+      },
+      {
+         "qText":"Jul",
+         "qNum":"NaN",
+         "qElemNumber":0,
+         "qState":"O"
+      },
+      {
+         "qText":"962716.741700",
+         "qNum":962716.741700002,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2001",
+         "qNum":2001,
+         "qElemNumber":3,
+         "qState":"O"
+      },
+      {
+         "qText":"Aug",
+         "qNum":"NaN",
+         "qElemNumber":1,
+         "qState":"O"
+      },
+      {
+         "qText":"2044600.003338",
+         "qNum":2044600.0033379968,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2001",
+         "qNum":2001,
+         "qElemNumber":3,
+         "qState":"O"
+      },
+      {
+         "qText":"Sep",
+         "qNum":"NaN",
+         "qElemNumber":2,
+         "qState":"O"
+      },
+      {
+         "qText":"1639840.108976",
+         "qNum":1639840.1089759984,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2001",
+         "qNum":2001,
+         "qElemNumber":3,
+         "qState":"O"
+      },
+      {
+         "qText":"Oct",
+         "qNum":"NaN",
+         "qElemNumber":3,
+         "qState":"O"
+      },
+      {
+         "qText":"1358050.470270",
+         "qNum":1358050.4702700009,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2001",
+         "qNum":2001,
+         "qElemNumber":3,
+         "qState":"O"
+      },
+      {
+         "qText":"Nov",
+         "qNum":"NaN",
+         "qElemNumber":4,
+         "qState":"O"
+      },
+      {
+         "qText":"2868129.203304",
+         "qNum":2868129.203304005,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ],
+   [
+      {
+         "qText":"2001",
+         "qNum":2001,
+         "qElemNumber":3,
+         "qState":"O"
+      },
+      {
+         "qText":"Dec",
+         "qNum":"NaN",
+         "qElemNumber":5,
+         "qState":"O"
+      },
+      {
+         "qText":"2458472.434226",
+         "qNum":2458472.434225998,
+         "qElemNumber":0,
+         "qState":"L"
+      }
+   ]
+]
+;				
+				$scope.data2 = [
+[{qText: "2012"},{qText: "January"},{qNum: 8216557.69190588, qText: "$8,216,558"}],
+//[{qText: "2012"},{qText: "February"},{qNum: 1678886.09688421, qText: "$1,678,886"}],
+[{qText: "2012"},{qText: "March"},{qNum: 6758411.77090081, qText: "$6,758,412"}],
+[{qText: "2012"},{qText: "April"},{qNum: 6729177.19344021, qText: "$6,729,177"}],
+[{qText: "2012"},{qText: "May"},{qNum: 4159811.50180759, qText: "$4,159,812"}],
+[{qText: "2012"},{qText: "June"},{qNum: 8560140.74739407, qText: "$8,560,141"}],
+[{qText: "2012"},{qText: "July"},{qNum: 4697270.2069956, qText: "$4,697,270"}],
+//[{qText: "2012"},{qText: "August"},{qNum: 3489857.30752409, qText: "$3,489,857"}],
+[{qText: "2012"},{qText: "September"},{qNum: 2824329.15692809, qText: "$2,824,329"}],
+[{qText: "2012"},{qText: "October"},{qNum: 2983824.00025901, qText: "$2,983,824"}],
+[{qText: "2012"},{qText: "November"},{qNum: 6986288.34865222, qText: "$6,986,288"}],
+[{qText: "2012"},{qText: "December"},{qNum: 7454911.27700937, qText: "$7,454,911"}],
+//[{qText: "2013"},{qText: "January"},{qNum: 3314225.12057077, qText: "$3,314,225"}],
+//[{qText: "2013"},{qText: "February"},{qNum: 3867154.15686122, qText: "$3,867,154"}],
+//[{qText: "2013"},{qText: "March"},{qNum: 1011947.68735133, qText: "$1,011,948"}],
+//[{qText: "2013"},{qText: "April"},{qNum: 1867014.07439439, qText: "$1,867,014"}],
+//[{qText: "2013"},{qText: "May"},{qNum: 1764771.31740971, qText: "$1,764,771"}],
+//[{qText: "2013"},{qText: "June"},{qNum: 862750.253627517, qText: "$862,750"}],
+//[{qText: "2013"},{qText: "July"},{qNum: 913397.900057612, qText: "$913,398"}],
+//[{qText: "2013"},{qText: "August"},{qNum: 4676667.32773313, qText: "$4,676,667"}],
+//[{qText: "2013"},{qText: "September"},{qNum: 4243298.84827118, qText: "$4,243,299"}],
+//[{qText: "2013"},{qText: "October"},{qNum: 3261345.35070393, qText: "$3,261,345"}],
+//[{qText: "2013"},{qText: "November"},{qNum: 4585937.24398727, qText: "$4,585,937"}],
+//[{qText: "2013"},{qText: "December"},{qNum: 8394006.77426958, qText: "$8,394,007"}],
+[{qText: "2014"},{qText: "January"},{qNum: 3629869.1227932, qText: "$3,629,869"}],
+//[{qText: "2014"},{qText: "February"},{qNum: 4868528.6192228, qText: "$4,868,529"}],
+[{qText: "2014"},{qText: "March"},{qNum: 7994277.17648903, qText: "$7,994,277"}],
+[{qText: "2014"},{qText: "April"},{qNum: 5613472.82381715, qText: "$5,613,473"}],
+[{qText: "2014"},{qText: "May"},{qNum: 9349416.12414852, qText: "$9,349,416"}],
+[{qText: "2014"},{qText: "June"},{qNum: 8562993.81943293, qText: "$8,562,994"}],
+[{qText: "2014"},{qText: "July"},{qNum: 3952543.22520447, qText: "$3,952,543"}],
+//[{qText: "2014"},{qText: "August"},{qNum: 229211.142056127, qText: "$229,211"}],
+//[{qText: "2014"},{qText: "September"},{qNum: 8891693.83611183, qText: "$8,891,694"}],
+[{qText: "2014"},{qText: "October"},{qNum: 8228404.96214335, qText: "$8,228,405"}],
+[{qText: "2014"},{qText: "November"},{qNum: 7652107.51751796, qText: "$7,652,108"}],
+[{qText: "2014"},{qText: "December"},{qNum: 6149863.60229994, qText: "$6,149,864"}],
+[{qText: "2015"},{qText: "January"},{qNum: 5401003.32575476, qText: "$5,401,003"}],
+//[{qText: "2015"},{qText: "February"},{qNum: 5944557.95218427, qText: "$5,944,558"}],
+[{qText: "2015"},{qText: "March"},{qNum: 4271294.56476552, qText: "$4,271,295"}],
+[{qText: "2015"},{qText: "April"},{qNum: 4647022.10818538, qText: "$4,647,022"}],
+[{qText: "2015"},{qText: "May"},{qNum: 8412908.19255074, qText: "$8,412,908"}],
+//[{qText: "2015"},{qText: "June"},{qNum: 7584710.30920053, qText: "$7,584,710"}],
+[{qText: "2015"},{qText: "July"},{qNum: 9947782.2866718, qText: "$9,947,782"}],
+[{qText: "2015"},{qText: "August"},{qNum: 8636768.2887174, qText: "$8,636,768"}],
+[{qText: "2015"},{qText: "September"},{qNum: 7954602.59199595, qText: "$7,954,603"}],
+[{qText: "2015"},{qText: "October"},{qNum: 3121701.48537651, qText: "$3,121,701"}],
+//[{qText: "2015"},{qText: "November"},{qNum: 9591810.38999614, qText: "$9,591,810"}],
+[{qText: "2015"},{qText: "December"},{qNum: 672421.36822655, qText: "$672,421"}],
+[{qText: "2016"},{qText: "January"},{qNum: 8051617.27701702, qText: "$8,051,617"}],
+//[{qText: "2016"},{qText: "February"},{qNum: 3627826.00209702, qText: "$3,627,826"}],
+[{qText: "2016"},{qText: "March"},{qNum: 9480785.76305856, qText: "$9,480,786"}],
+//[{qText: "2016"},{qText: "April"},{qNum: 7755676.00135768, qText: "$7,755,676"}],
+//[{qText: "2016"},{qText: "May"},{qNum: 1332579.30788357, qText: "$1,332,579"}],
+[{qText: "2016"},{qText: "June"},{qNum: 2405967.80233637, qText: "$2,405,968"}],
+				];
+
+$scope.oneDim1 = [
+[{qText: "January"},{qNum: 3314225.12057077, qText: "$3,314,225"}],
+[{qText: "February"},{qNum: 3867154.15686122, qText: "$3,867,154"}],
+[{qText: "March"},{qNum: 1011947.68735133, qText: "$1,011,948"}],
+[{qText: "April"},{qNum: 1867014.07439439, qText: "$1,867,014"}],
+[{qText: "May"},{qNum: 1764771.31740971, qText: "$1,764,771"}],
+[{qText: "June"},{qNum: 862750.253627517, qText: "$862,750"}],
+[{qText: "July"},{qNum: 913397.900057612, qText: "$913,398"}],
+[{qText: "August"},{qNum: 4676667.32773313, qText: "$4,676,667"}],
+[{qText: "September"},{qNum: 4243298.84827118, qText: "$4,243,299"}],
+[{qText: "October"},{qNum: 3261345.35070393, qText: "$3,261,345"}],
+[{qText: "November"},{qNum: 4585937.24398727, qText: "$4,585,937"}],
+[{qText: "December"},{qNum: 8394006.77426958, qText: "$8,394,007"}]
+];
+
+$scope.oneDim2 = [
+//[{qText: "January"},{qNum: 3314225.12057077, qText: "$3,314,225"}],
+[{qText: "February"},{qNum: 3867154.15686122, qText: "$3,867,154"}],
+[{qText: "March"},{qNum: 1011947.68735133, qText: "$1,011,948"}],
+//[{qText: "April"},{qNum: 1867014.07439439, qText: "$1,867,014"}],
+[{qText: "May"},{qNum: 1764771.31740971, qText: "$1,764,771"}],
+//[{qText: "June"},{qNum: 862750.253627517, qText: "$862,750"}],
+[{qText: "July"},{qNum: 913397.900057612, qText: "$913,398"}],
+[{qText: "August"},{qNum: 4676667.32773313, qText: "$4,676,667"}],
+//[{qText: "September"},{qNum: 4243298.84827118, qText: "$4,243,299"}],
+[{qText: "October"},{qNum: 3261345.35070393, qText: "$3,261,345"}],
+[{qText: "November"},{qNum: 4585937.24398727, qText: "$4,585,937"}],
+//[{qText: "December"},{qNum: 8394006.77426958, qText: "$8,394,007"}]
+];
+				$scope.data = $scope.data1;
+				$scope.g = Object.create(ldwbarsPlus);
+				$scope.id = "myId";
+				$scope.setData = function(i) {
+					if (i == 1) {
+						if ($scope.g.nDims == 1) {
+							$scope.data = $scope.oneDim1;
+						}
+						else {
+							$scope.data = $scope.data1;
+						}
+					}
+					else {
+						if ($scope.g.nDims == 1) {
+							$scope.data = $scope.oneDim2;
+						}
+						else {
+							$scope.data = $scope.data2;
+						}
+					};
+				};
+				$scope.doResize = function() {
+					var div = $("#myContainer");
+					if (div.width() == 700) {
+						div.width(350);
+						div.height(175);
+					}
+					else {
+						div.width(700);
+						div.height(350);
+					}
+				}
+				$scope.refresh = function() {
+					$scope.g.refreshChart();
+				}
+				
+			})
+			;
+    </script>
+</head>
+<body ng-controller="barsPlusCtrl">
+<style>
+label, input, select {
+	font-family: sans-serif;
+	font-size: 10pt;
+}
+</style>
+<div style="font-face: sans-serif; font-size: 11px">
+	<button type="button" ng-click="setData(1)">Full Data</button>
+	<button type="button" ng-click="setData(2)">Reduced Data</button>
+	<button type="button" ng-click="doResize()">Resize Toggle</button>
+	<button type="button" ng-click="refresh()">Refresh</button>
+	<br><br>
+	<label>Bar orientation</label>
+	<select ng-model="g.orientation" ng-change="refresh()">
+		<option value="H">Horizontal</option>
+		<option value="V">Vertical</option>
+	</select>
+	<label>Normalized: </label>
+	<select ng-model="g.normalized" ng-change="g.initData(); refresh()">
+		<option value="">Not Normalized</option>
+		<option value="normalized">Normalized</option>
+	</select>
+	<label>Show Deltas: </label>
+	<select ng-model="g.showDeltas" ng-change="g.initData(); refresh()">
+		<option value="">No deltas</option>
+		<option value="showDeltas">Show Deltas</option>
+	</select>
+	<label>Bar Gap: <input size="3" type="text" ng-model="g.barGap" ng-change="refresh()" ng-model-options="{updateOn: 'blur'}"></label>
+	<label>Outer Gap: <input size="3" type="text" ng-model="g.outerGap" ng-change="refresh()" ng-model-options="{updateOn: 'blur'}"></label>
+	<label>Grid Height: <input size="3" type="text" ng-model="g.gridHeight" ng-change="refresh()" ng-model-options="{updateOn: 'blur'}"></label>
+	<br><br>
+	<label>Dimension title: <input size="10" type="text" ng-model="g.axisTitleD" ng-change="refresh()" ng-model-options="{updateOn: 'blur'}"></label>
+	<label>Dimension labels/title</label>
+	<select ng-model="g.labelTitleD" ng-change="refresh()">
+		<option value="B">Labels and Title</option>
+		<option value="L">Labels only</option>
+		<option value="T">Title only</option>
+		<option value="N">Neither</option>
+	</select>
+	<label>Dimension label style:</label>
+	<select ng-model="g.labelStyleD" ng-change="refresh()">
+		<option value="A">Auto</option>
+		<option value="T">Tilted</option>
+		<option value="S">Staggered</option>
+		<option value="H">Horizontal</option>
+	</select>
+	<label>Dimension gridlines: </label>
+	<select ng-model="g.gridlinesD" ng-change="refresh()">
+		<option value="">No gridlines</option>
+		<option value="gridlinesD">Gridlines</option>
+	</select>
+	<br><br>
+	<label>Dimension axis margin: </label>
+	<select ng-model="g.axisMarginD" ng-change="refresh()">
+		<option value="N">Narrow</option>
+		<option value="M">Medium</option>
+		<option value="W">Wide</option>
+	</select>
+	<br><br>
+	<label>Measure title: <input size="10" type="text" ng-model="g.axisTitleM" value="Sales Amount (USD)" ng-change="refresh()" ng-model-options="{updateOn: 'blur'}"></label>
+	<label>Measure labels/title</label>
+	<select ng-model="g.labelTitleM" ng-change="refresh()">
+		<option value="B">Labels and Title</option>
+		<option value="L">Labels only</option>
+		<option value="T">Title only</option>
+		<option value="N">Neither</option>
+	</select>
+	<label>Measure label style:</label>
+	<select ng-model="g.labelStyleM" ng-change="refresh()">
+		<option value="A">Auto</option>
+		<option value="T">Tilted</option>
+		<option value="S">Staggered</option>
+		<option value="H">Horizontal</option>
+	</select>
+	<label>Measure gridlines: </label>
+	<select ng-model="g.gridlinesM" ng-change="refresh()">
+		<option value="">No gridlines</option>
+		<option value="gridlinesM">Gridlines</option>
+	</select>
+	<br><br>
+	<label>Measure axis margin: </label>
+	<select ng-model="g.axisMarginM" ng-change="refresh()">
+		<option value="N">Narrow</option>
+		<option value="M">Medium</option>
+		<option value="W">Wide</option>
+	</select>
+	<label>Measure format: </label>
+	<select ng-model="g.axisFormatM" ng-change="refresh()">
+		<option value="A">Auto</option>
+		<option value="N">Number</option>
+		<option value="P">Percent</option>
+		<option value="S">SI-Notation (K, M, etc)</option>
+		<option value="C">Custom</option>		
+	</select>
+	<label>Format: <input size="8" type="text" ng-model="g.axisFormatMs" ng-change="refresh()" ng-model-options="{updateOn: 'blur'}"></label>
+	<label>Ticks: </label>
+	<select ng-model="g.ticks" ng-change="refresh()">
+		<option value="1">1</option>
+		<option value="2">2</option>
+		<option value="3">3</option>
+		<option value="4">4</option>
+		<option value="5">5</option>
+		<option value="6">6</option>
+		<option value="7">7</option>
+		<option value="8">8</option>
+		<option value="9">9</option>
+		<option value="10">10</option>
+	</select>
+	<br><br>
+	<label>Color scheme: </label>
+	<select ng-model="g.colorScheme" ng-change="refresh()">
+		<option value="category20b">category20b</option>
+		<option value="category20c">category20c</option>
+		<option value="category20">category20</option>
+		<option value="category10">category10</option>
+		<option value="google20">google20</option>
+		<option value="custom100">custom100</option>
+		<option value="qlikView18">qlikView18</option>
+		<option value="qlikSense12">qlikSense12</option>
+	</select>
+	<label>Offset: <input size="5" type="text" ng-model="g.colorOffset" ng-change="refresh()" ng-model-options="{updateOn: 'blur'}"></label>
+	<label>Background Color: </label>
+	<select ng-model="g.backgroundColor" ng-change="refresh()">
+		<option value="White">White</option>
+		<option value="Silver">Silver</option>
+		<option value="Azure">Azure</option>
+		<option value="#f2f2f2">#f2f2f2</option>
+	</select>
+	<br><br>
+	<label>Transition Delay: <input size="5" type="text" ng-model="g.transitionDelay" ng-change="refresh()" ng-model-options="{updateOn: 'blur'}"></label>
+	<label>Transition Duration: <input size="5" type="text" ng-model="g.transitionDuration" ng-change="refresh()" ng-model-options="{updateOn: 'blur'}"></label>
+	<select ng-model="g.ease" ng-change="refresh()">
+		<option value="linear">linear</option>
+		<option value="quad">quad</option>
+		<option value="cubic">cubic</option>
+		<option value="sin">sin</option>
+		<option value="exp">exp</option>
+		<option value="circle">circle</option>
+		<option value="elastic">elastic</option>
+		<option value="back">back</option>
+		<option value="bounce">bounce</option>
+	</select>
+	<label>Dims: </label>
+	<select ng-model="g.nDims" ng-change="setData(1); refresh()">
+		<option value="1">One</option>
+		<option value="2">Two</option>
+	</select>
+	<br><br>
+	<label>Show Legend: </label>
+	<select ng-model="g.showLegend" ng-change="refresh()">
+		<option value="">No legend</option>
+		<option value="showLegend">Show legend</option>
+	</select>
+	<label>Legend position: </label>
+	<select ng-model="g.legendPosition" ng-change="refresh()">
+		<option value="R">right</option>
+		<option value="L">left</option>
+		<option value="T">top</option>
+		<option value="B">bottom</option>
+	</select>
+	<label>Legend size: </label>
+	<select ng-model="g.legendSize" ng-change="refresh()">
+		<option value="N">Narrow</option>
+		<option value="M">Medium</option>
+		<option value="W">Wide</option>
+	</select>
+	<select ng-model="g.legendSpacing" ng-change="refresh()">
+		<option value="N">Narrow</option>
+		<option value="M">Medium</option>
+		<option value="W">Wide</option>
+	</select>
+	<br><br>
+</div>
+		<div id="myContainer" class="qv-object-barsPlus" style="display: inline-block; width: 700px; height: 400px">
+			<bars-plus
+				axis-title-d="Sales Month"
+				axis-title-m="Sales Amount (USD)"
+				orientation="H"
+				normalized="normalized"
+				show-deltas="showDeltas"
+				bar-gap="0.3"
+				outer-gap="0.3"
+				grid-height="1"
+				background-color="White"
+				color-scheme="category20b"
+				color-offset="0"
+				
+				show-legend=""
+				legend-position="R"
+				legend-size="M"
+				legend-spacing="M"
+
+				label-title-d="B"
+				label-style-d="H"
+				gridlines-d=""
+				axis-margin-d="M"
+				
+				label-title-m="B"
+				label-style-m="H"
+				gridlines-m=""
+				axis-margin-m="M"
+				ticks="5"
+				axis-format-m="C"
+				axis-format-ms="s"
+				
+				transitions="transitions"
+				transition-delay="100"
+				transition-duration="1000"
+				ease="linear"
+				>
+			</bars-plus>
+		</div>
+</body>
+</html>
