@@ -169,6 +169,10 @@ Need I say that the "bounce" style should not be used in production applications
 
 If you would like to change any default settings, just make the appropriate change to **barsPlus-props.js**.
 
+## Example Qlik Sense Application
+
+See the Qlik Sense application **BarsPlus.qvf** in the **app** folder for the examples shown on this page.
+
 ## Test Program
 
 A standalone AngularJS application has been created to allow seeing the effect of various parameter changes quickly.  Just double-click on the file **barsPlus-test.html** in the extension folder.  This has test data sets and form elements to change parameters.  The buttons at the top will reduce the data set or resize the control.
