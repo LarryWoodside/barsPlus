@@ -173,7 +173,7 @@ If you would like to change any default settings, just make the appropriate chan
 
 A standalone AngularJS application has been created to allow seeing the effect of various parameter changes quickly.  Just double-click on the file **barsPlus-test.html** in the extension folder.  This has test data sets and form elements to change parameters.  The buttons at the top will reduce the data set or resize the control.
 
-![alt text](https://github.com/LarryWoodside/barsPlus/blob/master/screenshots/testProgram "barsPlus Test Application")
+![alt text](https://github.com/LarryWoodside/barsPlus/blob/master/screenshots/testProgram.png "barsPlus Test Application")
 
 ## Any Issues?
 
