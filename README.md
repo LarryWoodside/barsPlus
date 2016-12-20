@@ -98,7 +98,7 @@ barsPlus is a single extension that allows creating bar charts (horizontal and v
 
 * **Outer bar spacing** is the spacing before the first bar and after the last bar.  Set this to 0 to remove all spacing.
 
-* **Grid height relative to max bar** generally the highest bar in a bar chart does not touch the top of the chart, so the grid is bigger than the highest bar.  Set this number to a value greater than one to provide space between the highest bar and the top of the chart.  Set this to 0 to allow bars to touch the top.  This should be set to 0 for 100% charts.
+* **Grid height relative to max bar** generally the highest bar in a bar chart does not touch the top of the chart, so the grid is bigger than the highest bar.  Set this number to a value greater than one to provide space between the highest bar and the top of the chart.  Set this to 1 to allow bars to touch the top.  This should be set to 1 for 100% charts.
 
 * **Background color** you can set the background color for the grid by entering a single color.  This can be a javascript color name: (white, gray, azure), a hex code (e.g. #d0d0d0, #f8f8f8), or rgb specifier: rgb(230,250,250).
 
@@ -158,6 +158,8 @@ barsPlus is a single extension that allows creating bar charts (horizontal and v
 #### Appearance -> Transitions
 
 * **Transitions enabled** allows you to enable or disable transitions
+
+* **Transition delay** is how long to delay before starting the transition.  Specify the number of milliseconds (1000 = 1 second).
 
 * **Transition duration** refers to how long the transition takes to complete.  Specify the number of milliseconds (1000 = 1 second).
 
