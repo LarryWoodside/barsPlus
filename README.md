@@ -5,6 +5,12 @@ barsPlus is a single extension that allows creating bar charts (horizontal and v
 
 ![alt text](https://github.com/LarryWoodside/barsPlus/blob/master/screenshots/stacked100pctChange.gif "barsPlus 100% bar chart with transitions")
 
+## Updates
+
+Version | Person        | Date        | Description        |
+--------|---------------|-------------|--------------------|
+V1.0.1  | L. Woodside   | 29-Dec-2016 | Added text on bars |
+
 ## Features
 
 * regular and stacked bar charts (1 or 2 dimensions)
@@ -17,6 +23,8 @@ barsPlus is a single extension that allows creating bar charts (horizontal and v
 * tooltips
 * standard and quick selections
 * multiple options available for fine tuning appearance
+* text inside bars: number, dimension text, or percentage (100% bars)
+* bar total lables: number, dimension text
 
 ## Installation
 
@@ -132,7 +140,7 @@ barsPlus is a single extension that allows creating bar charts (horizontal and v
 
 * **Labels and title** whether to show "Labels and title", "Labels only", "Title only", or "None".  Title is the single name for an axis appearing in the center.  Labels are the ticks, numbers/descriptions, gridlines.
 
-* **Label Style:**: "Auto", "Horizontal", "Staggered", "Tilted".  Auto means a horizontal label will be used unless there is not enough space, in which case the labels will be tilted 45 degrees.
+* **Label Style:** "Auto", "Horizontal", "Staggered", "Tilted".  Auto means a horizontal label will be used unless there is not enough space, in which case the labels will be tilted 45 degrees.
 
 * **Gridlines** controls whether gridlines can span the length or height of the chart.  Gridlines cannot be shown when labels have been suppressed.
 
@@ -153,6 +161,43 @@ barsPlus is a single extension that allows creating bar charts (horizontal and v
 * **Measure tick spacing** controls the number of ticks that appear on the axis.  Wide has few ticks while Narrow has more.
 
 * **Measure axis number format**: since it's not clear how to format numbers using Qlik Sense format strings from an extension, the native D3 number formatting is used on the measure axis. Choose the basic format from the dropdown or specify "Custom" to enter a D3 format string.  Format strings are described here: 
+*[D3 Format Description](https://github.com/d3/d3-3.x-api-reference/blob/master/Formatting.md "D3 format strings")*
+
+#### Appearance -> Text on Bars
+
+* **Text on bars**
+
+  * "None" for no text on bars
+  
+  * "Inside bars" to display text in each segment that makes up a stacked bar,
+  
+  * "Total" to display text on top of each vertical bar or to the right of each horizontal bar,
+  
+  * "Both" to display both the text inside the bars and the total text
+
+* **Text to show in bars**: choose whether to show the "Measure" number, the "Dimension" text, or in the case of 100% bars "Percent"
+
+* **Text to show for total** allows either the total number to be displayed or the dimension text (allowing the dimension axis labels to be removed).
+
+* **Horizontal inner bar padding (px)** updates the amount of space to the left and right of text inside a bar.
+
+* **Vertical inner bar padding (px)** changes the amount of space above or below text inside a bar.
+
+* **Text size proportional**: select this to have the text change in size when the chart is resized.  This requires adjustment of the text size proportion factor.
+
+* **Text size proportion factor** is the size of the text relative to the width of bars (for vertical bars) or the height of the bars (for horizontal bars).  For horizontal bars this is set to 1 to make very large text, for vertical bars the factor is usually much less.  Some experimentation is needed to get the correct factor.
+
+* **Show text at all if ellipsis**: text that is too long to fit in the space provided is shortened and an ellipsis "..." is added to indicate not all the text is displayed.  For numbers this can cause invalid information to be displayed so it is better not to show any text at all if the ellipsis is present.
+
+* **Text color** "Auto" will cause the color to change depending on the bar color in order to increase the contrast, but this can be overridden to be either always black or always white.
+
+* **Vertical alignment** allows the text to be aligned vertically within a bar segment, choose "Top", "Bottom" or "Center".
+
+* **Horizontal alignment** changes how the text is aligned horizontally within a bar segment, choose "Left", "Right" or "Center".
+
+* **Total format**: here you can specify how numbers are to be formatted for bar totals.  Choose a predefined format or choose "Custom" to specify a format string.
+
+* **Total format string** is the D3.format string.  Format strings are described here: 
 *[D3 Format Description](https://github.com/d3/d3-3.x-api-reference/blob/master/Formatting.md "D3 format strings")*
 
 #### Appearance -> Transitions
