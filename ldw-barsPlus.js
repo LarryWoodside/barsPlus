@@ -7,6 +7,7 @@
  
 	Version		Person			Date			Description
 	V1.0.0		L. Woodside		19-Dec-2016		Initial Release
+	V1.1.0		L. Woodside		29-Dec-2016		Added text on bars
 
  Dependencies: d3.v3.js
 
@@ -27,11 +28,11 @@
  outerGap			Spacing before first bar and after last bar
  gridHeight			Height of grid relative to highest bar
  backgroundColor	Grid background color
- colorScheme		Named color scheme
- colorOffset		Offset of first color in color scheme
 
  Colors and Legend
  
+ colorScheme		Named color scheme
+ colorOffset		Offset of first color in color scheme
  singleColor		Whether to use single color for 1-dimensional bars
  showLegend			Whether to show the legend
  legendPosition		Legend position: T - top, R - right, B - bottom, L - left
@@ -57,6 +58,23 @@
  axisFormatM		Number format for measure axis, A - Auto, N - Number, P - Percent, S - SI, C - Custom
  axisFormatMs		Number format string for measure axis, D3 format
  
+ Text on Bars
+
+ showTexts			Whether to show text on bars: B - on bars, T - total, A - both, N - none
+ showDim			What to show in bars: M - measure, D - dimension, P - percent
+ showTot			What to show for total: M - measure, D - dimension
+ innerBarPadH		Horizontal inner bar padding (px)
+ innerBarPadV		Vertical inner bar padding (px)
+ textSizeAbs		Whether to use textSize instead of textSizeFactor (horizontal bars only)
+ textSizeFactor		Text size as proportion of bar height (horizontal bars only)
+ textSize			Text size (px), when vertical bars or textSizeAbs = false
+ textDots			Whether to show text at all if ellipsis would be shown
+ textColor			"Auto" - Choose white or black depending on bar color, else text color string
+ vAlign				Vertical alignment: C - center, T - top, B - bottom
+ hAlign				Horizontal alignment: C - Center, L - left, R - right
+ totalFormatM		Number format for total: N - Number, P - Percent, S - SI, C - Custom
+ totalFormatMs		Number format string for total, D3 format
+
  Transitions
  
  transitions		Whether to enable transitions
@@ -93,16 +111,15 @@ var ldwbarsPlus = {
 initData: function() {
 
 	var g = this;
-
 	var struc = [], flatData = [], q = [], deltas = [];
-	
+
 	if (!g.rawData[0]) return; // sometimes undefined
 	// Process one dimension data
 	if (g.rawData[0].length == 2) {
 		g.nDims = 1;
 		g.normalized = false;
 		g.rawData.forEach(function(d) {
-			struc.push({dim1: d[0].qText, total: d[1].qNum});
+			struc.push({dim1: d[0].qText, offset: d[1].qNum});
 			flatData.push({
 					dim1: d[0].qText, 
 					dim2: d[0].qText, 
@@ -121,9 +138,8 @@ initData: function() {
 		g.allDim2 = q;
 		return;		
 	};
-	// Process two dimension data
+	// Process two dimensional data
 	g.nDims = 2;
-	// Process the two dimensional data
 
 	var p1 = "", p2, edges = [], b, p = [];
 	g.rawData.forEach(function(d) {
@@ -211,7 +227,7 @@ initData: function() {
 			}
 		});
 		flatData.push.apply(flatData,v);
-		struc.push({dim1: d.key, total: t, values: v});
+		struc.push({dim1: d.key, offset: t, values: v});
 		
 		if (idx > 0 && g.showDeltas) {
 			var p = struc[idx-1].values;
@@ -355,7 +371,7 @@ initChart: function() {
 		.rangeRoundBands(g.orientation == "V" ? [0, innerWidth] : [innerHeight,0], g.barGap, g.outerGap)
 		;
 	g.mScale = d3.scale.linear()
-		.domain([0, d3.max(g.data, function(d) { return (g.normalized ? 1 : d.total)*g.gridHeight; })])
+		.domain([0, d3.max(g.data, function(d) { return (g.normalized ? 1 : d.offset)*g.gridHeight; })])
 		.range(g.orientation == "V" ? [innerHeight,0] : [0, innerWidth])
 		.nice()
 		;
@@ -399,7 +415,7 @@ initChart: function() {
 			.orient(g.orientation == "V" ? "left" : "bottom")
 			.tickSize(g.gridlinesM ? (g.orientation == "V" ? -innerWidth : -innerHeight) : 6)
 			.ticks(g.ticks)
-			.tickFormat(d3.format(["s", ",.0f", ",.0%", "s", g.axisFormatMs]["ANPSC".indexOf(g.axisFormatM)]))
+			.tickFormat(d3.format([",.3s", ",.0f", ",.0%", ",.3s", g.axisFormatMs]["ANPSC".indexOf(g.axisFormatM)]))
 			.tickPadding(5)
 			;
 		mGrp.call(g.mAxis);
@@ -464,6 +480,28 @@ initChart: function() {
 	g.bars = g.svg.selectAll("#" + g.id + " .ldwbar")
 		.data(g.flatData, function(d) { return d.dim1 + '|' + d.dim2; } )
 		;
+	// Text on bars
+	if (g.showTexts != "N") {
+		// Create text box for determining sizing
+		g.tref = g.svg.append("text")
+			.attr("x","0")
+			.attr("y","-100")
+			.attr("class","ldwtxtref")
+			;
+
+		if (~"TA".indexOf(g.showTexts) && !g.normalized) {
+			// Create bars totals
+			g.totals = g.svg.selectAll("#" + g.id + " .ldwtot")
+				.data(g.data, function(d) { return d.dim1; } )
+				;
+		}
+		if (~"BA".indexOf(g.showTexts)) {
+			// Create text on bars
+			g.texts = g.svg.selectAll("#" + g.id + " .ldwtxt")
+				.data(g.flatData, function(d) { return d.dim1 + '|' + d.dim2; } )
+				;
+		}
+	}
 	// Create deltas
 	if (g.showDeltas && g.nDims == 2) {
 		g.polys = g.svg.selectAll("#" + g.id + " polygon")
@@ -568,6 +606,54 @@ createBars: function() {
 		})
 		;
 
+	if (~"TA".indexOf(g.showTexts) && !g.normalized) {
+		// Create totals
+		g.totals
+			.enter()
+			.append("text")
+			.attr("class","ldwtot")
+			.style("opacity","0")
+			.each(function(d) {
+				d.qNum = g.mScale.domain()[1] - d.offset;
+				d.qText = d3.format([",.0f", ",.0%", ",.3s", g.totalFormatMs]["NPSC".indexOf(g.totalFormatM)])(d.offset);
+				var txp = g.barText(d, true);
+
+				d3.select(this)
+					.style("fill", "black")
+					.style("font-size", g.tref.style("font-size"))
+					.attr("x",g.orientation == "V" ? txp.x : 0)
+					.attr("y",g.orientation == "V" ? g.mScale(0) : txp.y)
+					.attr("dy","-.2em")
+					.text(txp.text)
+					;
+
+			})
+			;
+	}
+
+	if (~"BA".indexOf(g.showTexts)) {
+		// Create text inside bars
+		g.texts
+			.enter()
+			.append("text")
+			.attr("class","ldwtxt")
+			.style("opacity","0")
+			.each(function(d) {
+				var txp = g.barText(d);
+
+				d3.select(this)
+					.style("fill", g.textColor == "Auto" ? g.txtColor(g.cScale(d.dim2)) : g.textColor )
+					.style("font-size", g.tref.style("font-size"))
+					.attr("x",g.orientation == "V" ? txp.x : 0)
+					.attr("y",g.orientation == "V" ? g.mScale(0) : txp.y)
+					.attr("dy","-.2em")
+					.text(txp.text)
+					;
+
+			})
+			;
+	}
+			
 	if (g.showDeltas && g.nDims == 2) {
 
 		// Create deltas
@@ -730,7 +816,90 @@ createBars: function() {
 			;
 	}
 },
+/**
+ *--------------------------------------
+ * Bar Text 
+ *-------------------------------------- 
+ * Get bar text information: x, y and text
+*/
+barText: function(d, total) {
+	var tx, txt, origX, bHeight, textX, bb, textY, textLength, ts;
+	var g = this;
 
+	// Relative text sizing, relative to bar width
+	// For total, make larger by reducing unneeded padding
+	var hAlign = g.hAlign, vAlign = g.vAlign, 
+		innerBarPadV = +g.innerBarPadV, 
+		innerBarPadH = +g.innerBarPadH;
+	if (g.textSizeAbs)
+		ts = g.textSize;
+	else {
+		if (total)
+			if (g.orientation == "H")
+				innerBarPadV = 1;
+			else
+				innerBarPadH = 1;
+		ts = g.textSizeFactor * (g.dScale.rangeBand() - 2 * (g.orientation == "H" ? innerBarPadV : innerBarPadH))
+		// limit size to maximum, also stored in textSize
+		if (ts > g.textSize) ts = g.textSize;
+	}
+	g.tref.style("font-size", ts);
+
+	if (total) { // Override some alignment for total
+		if (g.orientation == "V")
+			vAlign = "B"
+		else
+			hAlign = "L"
+	}
+	origX = g.orientation == "V" ? g.dScale(d.dim1) : g.mScale(d.offset);
+	bHeight = g.orientation == "V" ? g.mScale(0) - g.mScale(d.qNum) : g.dScale.rangeBand();
+	textX = g.orientation == "V" ? g.dScale.rangeBand() : g.mScale(d.qNum);
+
+	g.tref.text(d.qNum == 0 ? "" 
+		: (total 
+			? (g.showTot == "D" ? d.dim1 : d.qText)
+			: (g.showDim == "D" ? d.dim2 : (g.showDim == "P" && g.normalized ? d.qTextPct : d.qText))
+		)
+	);
+
+	bb = g.tref.node().getBBox();
+	tx = origX + innerBarPadH;
+	if (vAlign == "C")
+		textY = g.orientation == "V" ? g.mScale(d.offset) - (g.mScale(0) - g.mScale(d.qNum)) + 
+									(g.mScale(0) - g.mScale(d.qNum) + bb.height)/2
+									: g.dScale(d.dim1) + (g.dScale.rangeBand() + bb.height)/2;
+	else if (vAlign == "T")
+		textY = g.orientation == "V" ? g.mScale(d.offset) - (g.mScale(0) - g.mScale(d.qNum)) + 
+									bb.height + innerBarPadV
+									: g.dScale(d.dim1) + innerBarPadV + bb.height;
+	else
+		textY = g.orientation == "V" ? g.mScale(d.offset) - innerBarPadV
+									: g.dScale(d.dim1) + g.dScale.rangeBand() - innerBarPadV;
+	txt = "";
+	if (bb.height + 2 * innerBarPadV <= bHeight || (g.orientation != "V" && !g.textSizeAbs)) {
+		if (bb.width + 2 * innerBarPadH <= textX) {
+			if (hAlign == "C") {
+				tx = origX + (textX - bb.width)/2;
+			}
+			else if (hAlign == "R") {
+				tx = origX + textX - bb.width - innerBarPadH;
+			}
+			txt = g.tref.text();
+		}
+		else if (g.textDots) {
+			textLength = g.tref.node().getComputedTextLength();
+			txt = g.tref.text();
+			while (textLength > textX - 2 * innerBarPadH && txt.length > 0) {
+				txt = txt.slice(0, -1);
+				g.tref.text(txt + '\u2026');
+				textLength = g.tref.node().getComputedTextLength();
+			}
+			if (txt.length != 0) txt = g.tref.text();
+		}
+	}
+	return {x: tx, y: textY, text: txt};
+
+},
 /**
  *--------------------------------------
  * Update Bars
@@ -744,7 +913,7 @@ updateBars: function() {
 	var dim1 = g.data.map(function(d) { return d.dim1; });
 	if (g.orientation == "H") dim1.reverse()
 	g.dScale.domain(dim1);
-	g.mScale.domain( [0, d3.max(g.data, function(d) { return (g.normalized ? 1 : d.total)*g.gridHeight; })]);
+	g.mScale.domain( [0, d3.max(g.data, function(d) { return (g.normalized ? 1 : d.offset)*g.gridHeight; })]);
 	var tDelay = g.transitions && !g.editMode ? g.transitionDelay : 0;
 	var tDuration = g.transitions && !g.editMode ? g.transitionDuration : 0;
 
@@ -823,6 +992,38 @@ updateBars: function() {
 		.style("opacity", "0")
 		.remove()
 		;
+
+	// Remove totals with transition
+	if (~"TA".indexOf(g.showTexts)) {
+		g.totals = g.svg.selectAll("#" + g.id + " .ldwtot")
+			.data(g.data, function(d) { return d.dim1; } )
+			;
+		g.totals
+			.exit()
+			.transition()
+			.delay(tDelay)
+			.duration(tDuration)
+			.ease(g.ease)
+			.style("opacity", "0")
+			.remove()
+			;
+	}
+	// Remove texts with transition
+	if (~"BA".indexOf(g.showTexts)) {
+		g.texts = g.svg.selectAll("#" + g.id + " .ldwtxt")
+			.data(g.flatData, function(d) { return d.dim1 + '|' + d.dim2; } )
+			;
+		g.texts
+			.exit()
+			.transition()
+			.delay(tDelay)
+			.duration(tDuration)
+			.ease(g.ease)
+			.style("opacity", "0")
+			.remove()
+			;
+	}
+	
 	if (g.showDeltas && g.nDims == 2) {			
 		g.polys = g.svg.selectAll("#" + g.id + " polygon")
 			.data(g.deltas, function(d) { return d.dim1p + "-" + d.dim1c + "," + d.dim2; } )
@@ -895,7 +1096,52 @@ updateBars: function() {
 			.attr("height", g.dScale.rangeBand())
 			;
 	}
-	
+
+	if (~"TA".indexOf(g.showTexts) && !g.normalized) {
+		// Update totals
+		g.totals
+			.each(function(d) {
+				d.qNum = g.mScale.domain()[1] - d.offset;
+				d.qText = d3.format([",.0f", ",.0%", ",.3s", g.totalFormatMs]["NPSC".indexOf(g.totalFormatM)])(d.offset);
+				var txp = g.barText(d, true);
+				d3.select(this)
+					.transition()
+					.delay(tDelay)
+					.duration(tDuration)
+					.ease(g.ease)
+					.style("opacity","1")
+					.style("fill", "black")
+					.style("font-size", g.tref.style("font-size"))
+					.attr({x: txp.x, y: txp.y, dy: "-.2em"})
+					.text(txp.text)
+					;
+
+			})
+			;
+	}
+
+	if (~"BA".indexOf(g.showTexts)) {
+		// Update texts
+		g.texts
+			.each(function(d) {
+				var txp = g.barText(d);
+
+				d3.select(this)
+					.transition()
+					.delay(tDelay)
+					.duration(tDuration)
+					.ease(g.ease)
+					.style("opacity","1")
+					.style("fill", g.textColor == "Auto" ? g.txtColor(g.cScale(d.dim2)) : g.textColor )
+					.style("font-size", g.tref.style("font-size"))
+					.attr({x: txp.x, y: txp.y, dy: "-.2em"})
+					.text(txp.text)
+					;
+
+			})
+			;
+	}
+
 	if (g.showDeltas && g.nDims == 2) {
 	
 		// update deltas
@@ -1077,7 +1323,15 @@ toposort: function(nodes, edges) {
 	}
 },
 /*- end https://github.com/marcelklehr/toposort */
-
+/*- begin http://stackoverflow.com/questions/11867545 */
+txtColor: function(hexcolor){
+	var r = parseInt(hexcolor.substr(1,2),16);
+	var g = parseInt(hexcolor.substr(3,2),16);
+	var b = parseInt(hexcolor.substr(5,2),16);
+	var yiq = ((r*299)+(g*587)+(b*114))/1000;
+	return (yiq >= 160) ? 'black' : 'white'; // 128 changed to 160 to give white preference
+},
+/*- end http://stackoverflow.com/questions/11867545 */
 //--------------------------------------
 // Color Schemes
 //--------------------------------------

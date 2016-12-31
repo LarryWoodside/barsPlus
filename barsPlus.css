@@ -1,3 +1,14 @@
+/**
+ * barsPlus styles
+ * 
+ * Author: L. Woodside
+ * Modification History:
+ *
+ *	Version		Person			Date			Description
+ *	V1.0.0		L. Woodside		19-Dec-2016		Initial Release
+ *  V1.1.0		L. Woodside		29-Dec-2016		Added text on bars
+ *
+*/
 .qv-object-barsPlus
 	.ldwaxis path, 
 	.ldwaxis line {
@@ -23,6 +34,11 @@
 	.ldwbar.selected {
 		stroke: black;
 		stroke-width: 2px;
+	}
+.qv-object-barsPlus
+	.ldwtxt, .ldwtxtref, .ldwtot {
+		font-family: sans-serif;
+		pointer-events: none;
 	}
 .qv-object-barsPlus
 	.ldwlegend text {
