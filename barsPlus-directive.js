@@ -9,6 +9,7 @@
  *
  *	Version		Person			Date			Description
  *	V1.0.0		L. Woodside		19-Dec-2016		Initial Release
+ *	V1.1.0		L. Woodside		29-Dec-2016		Added text on bars
  *
 */
 define( [
@@ -78,6 +79,23 @@ function ($, qvangular, ldwBarsPlus) {
 						g.axisFormatM = p.axisFormatM;
 						g.axisFormatMs = p.axisFormatMs;
 						
+						// Text on bars
+
+						g.showTexts = p.showTexts;
+						g.showDim = p.showDim;
+						g.showTot = p.showTot;
+						g.innerBarPadH = p.innerBarPadH;
+						g.innerBarPadV = p.innerBarPadV;
+						g.textSizeAbs = p.textSizeAbs;
+						g.textSizeFactor = p.textSizeFactor;
+						g.textSize = p.textSize;
+						g.textDots = p.textDots;
+						g.textColor = p.textColor;
+						g.vAlign = p.vAlign;
+						g.hAlign = p.hAlign;
+						g.totalFormatM = p.totalFormatM;
+						g.totalFormatMs = p.totalFormatMs;
+
 						// Transitions
 						g.transitions = p.transitions;
 						g.transitionDelay = p.transitionDelay;

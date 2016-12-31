@@ -11,6 +11,7 @@
 
 		Version		Person			Date			Description
 		V1.0.0		L. Woodside		19-Dec-2016		Initial Release
+		V1.1.0		L. Woodside		29-Dec-2016		Added text on bars
 	-->
 	<meta charset="utf-8">
     <title>Bars Plus Test Application</title>
@@ -25,7 +26,7 @@
 			.directive("barsPlus", function() {
 				return {
 					link: function(scope, element, attrs) {
-					
+
 						var g = scope.g;
 						
 						g.nDims = 2;
@@ -70,6 +71,21 @@
 						g.axisFormatM = attrs["axisFormatM"];
 						g.axisFormatMs = attrs["axisFormatMs"];
 
+                        g.showTexts = attrs["showTexts"];
+                        g.showDim = attrs["showDim"];
+                        g.showTot = attrs["showTot"];
+                        g.innerBarPadH = attrs["innerBarPadH"];
+                        g.innerBarPadV = attrs["innerBarPadV"];
+                        g.textSizeAbs = attrs["textSizeAbs"];
+                        g.textSizeFactor = attrs["textSizeFactor"];
+                        g.textSize = attrs["textSize"];
+                        g.textDots = attrs["textDots"];
+                        g.textColor = attrs["textColor"];
+                        g.vAlign = attrs["vAlign"];
+                        g.hAlign = attrs["hAlign"];
+						g.totalFormatM = attrs["totalFormatM"];
+						g.totalFormatMs = attrs["totalFormatMs"];
+
 						g.transitions = attrs["transitions"];
 						g.transitionDelay = attrs["transitionDelay"];
 						g.transitionDuration = attrs["transitionDuration"];
@@ -107,862 +123,136 @@
             .controller("barsPlusCtrl", function ($scope) {
 			
 				$scope.data1 = [
-[{qText: "2012"},{qText: "January"},{qNum: 8216557.69190588, qText: "$8,216,558"}],
-[{qText: "2012"},{qText: "February"},{qNum: 1678886.09688421, qText: "$1,678,886"}],
-[{qText: "2012"},{qText: "March"},{qNum: 6758411.77090081, qText: "$6,758,412"}],
-[{qText: "2012"},{qText: "April"},{qNum: 6729177.19344021, qText: "$6,729,177"}],
-[{qText: "2012"},{qText: "May"},{qNum: 4159811.50180759, qText: "$4,159,812"}],
-[{qText: "2012"},{qText: "June"},{qNum: 8560140.74739407, qText: "$8,560,141"}],
-[{qText: "2012"},{qText: "July"},{qNum: 4697270.2069956, qText: "$4,697,270"}],
-[{qText: "2012"},{qText: "August"},{qNum: 3489857.30752409, qText: "$3,489,857"}],
-[{qText: "2012"},{qText: "September"},{qNum: 2824329.15692809, qText: "$2,824,329"}],
-[{qText: "2012"},{qText: "October"},{qNum: 2983824.00025901, qText: "$2,983,824"}],
-[{qText: "2012"},{qText: "November"},{qNum: 6986288.34865222, qText: "$6,986,288"}],
-[{qText: "2012"},{qText: "December"},{qNum: 7454911.27700937, qText: "$7,454,911"}],
-[{qText: "2013"},{qText: "January"},{qNum: 3314225.12057077, qText: "$3,314,225"}],
-[{qText: "2013"},{qText: "February"},{qNum: 3867154.15686122, qText: "$3,867,154"}],
-[{qText: "2013"},{qText: "March"},{qNum: 1011947.68735133, qText: "$1,011,948"}],
-[{qText: "2013"},{qText: "April"},{qNum: 1867014.07439439, qText: "$1,867,014"}],
-[{qText: "2013"},{qText: "May"},{qNum: 1764771.31740971, qText: "$1,764,771"}],
-[{qText: "2013"},{qText: "June"},{qNum: 862750.253627517, qText: "$862,750"}],
-[{qText: "2013"},{qText: "July"},{qNum: 913397.900057612, qText: "$913,398"}],
-[{qText: "2013"},{qText: "August"},{qNum: 4676667.32773313, qText: "$4,676,667"}],
-[{qText: "2013"},{qText: "September"},{qNum: 4243298.84827118, qText: "$4,243,299"}],
-[{qText: "2013"},{qText: "October"},{qNum: 3261345.35070393, qText: "$3,261,345"}],
-[{qText: "2013"},{qText: "November"},{qNum: 4585937.24398727, qText: "$4,585,937"}],
-[{qText: "2013"},{qText: "December"},{qNum: 8394006.77426958, qText: "$8,394,007"}],
-[{qText: "2014"},{qText: "January"},{qNum: 3629869.1227932, qText: "$3,629,869"}],
-[{qText: "2014"},{qText: "February"},{qNum: 4868528.6192228, qText: "$4,868,529"}],
-[{qText: "2014"},{qText: "March"},{qNum: 7994277.17648903, qText: "$7,994,277"}],
-[{qText: "2014"},{qText: "April"},{qNum: 5613472.82381715, qText: "$5,613,473"}],
-[{qText: "2014"},{qText: "May"},{qNum: 9349416.12414852, qText: "$9,349,416"}],
-[{qText: "2014"},{qText: "June"},{qNum: 8562993.81943293, qText: "$8,562,994"}],
-[{qText: "2014"},{qText: "July"},{qNum: 3952543.22520447, qText: "$3,952,543"}],
-[{qText: "2014"},{qText: "August"},{qNum: 229211.142056127, qText: "$229,211"}],
-[{qText: "2014"},{qText: "September"},{qNum: 8891693.83611183, qText: "$8,891,694"}],
-[{qText: "2014"},{qText: "October"},{qNum: 8228404.96214335, qText: "$8,228,405"}],
-[{qText: "2014"},{qText: "November"},{qNum: 7652107.51751796, qText: "$7,652,108"}],
-[{qText: "2014"},{qText: "December"},{qNum: 6149863.60229994, qText: "$6,149,864"}],
-[{qText: "2015"},{qText: "January"},{qNum: 5401003.32575476, qText: "$5,401,003"}],
-[{qText: "2015"},{qText: "February"},{qNum: 5944557.95218427, qText: "$5,944,558"}],
-[{qText: "2015"},{qText: "March"},{qNum: 4271294.56476552, qText: "$4,271,295"}],
-[{qText: "2015"},{qText: "April"},{qNum: 4647022.10818538, qText: "$4,647,022"}],
-[{qText: "2015"},{qText: "May"},{qNum: 8412908.19255074, qText: "$8,412,908"}],
-[{qText: "2015"},{qText: "June"},{qNum: 7584710.30920053, qText: "$7,584,710"}],
-[{qText: "2015"},{qText: "July"},{qNum: 9947782.2866718, qText: "$9,947,782"}],
-[{qText: "2015"},{qText: "August"},{qNum: 8636768.2887174, qText: "$8,636,768"}],
-[{qText: "2015"},{qText: "September"},{qNum: 7954602.59199595, qText: "$7,954,603"}],
-[{qText: "2015"},{qText: "October"},{qNum: 3121701.48537651, qText: "$3,121,701"}],
-[{qText: "2015"},{qText: "November"},{qNum: 9591810.38999614, qText: "$9,591,810"}],
-[{qText: "2015"},{qText: "December"},{qNum: 672421.36822655, qText: "$672,421"}],
-[{qText: "2016"},{qText: "January"},{qNum: 8051617.27701702, qText: "$8,051,617"}],
-[{qText: "2016"},{qText: "February"},{qNum: 3627826.00209702, qText: "$3,627,826"}],
-[{qText: "2016"},{qText: "March"},{qNum: 9480785.76305856, qText: "$9,480,786"}],
-[{qText: "2016"},{qText: "April"},{qNum: 7755676.00135768, qText: "$7,755,676"}],
-[{qText: "2016"},{qText: "May"},{qNum: 1332579.30788357, qText: "$1,332,579"}],
-[{qText: "2016"},{qText: "June"},{qNum: 2405967.80233637, qText: "$2,405,968"}],
-				];
-
-$scope.data1 = 
-[
-   [
-      {
-         "qText":"2003",
-         "qNum":2003,
-         "qElemNumber":0,
-         "qState":"O"
-      },
-      {
-         "qText":"Jan",
-         "qNum":"NaN",
-         "qElemNumber":6,
-         "qState":"O"
-      },
-      {
-         "qText":"1756407.005206",
-         "qNum":1756407.005205989,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2003",
-         "qNum":2003,
-         "qElemNumber":0,
-         "qState":"O"
-      },
-      {
-         "qText":"Feb",
-         "qNum":"NaN",
-         "qElemNumber":7,
-         "qState":"O"
-      },
-      {
-         "qText":"2873936.926443",
-         "qNum":2873936.9264430115,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2003",
-         "qNum":2003,
-         "qElemNumber":0,
-         "qState":"O"
-      },
-      {
-         "qText":"Mar",
-         "qNum":"NaN",
-         "qElemNumber":8,
-         "qState":"O"
-      },
-      {
-         "qText":"2049529.873304",
-         "qNum":2049529.8733039862,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2003",
-         "qNum":2003,
-         "qElemNumber":0,
-         "qState":"O"
-      },
-      {
-         "qText":"Apr",
-         "qNum":"NaN",
-         "qElemNumber":9,
-         "qState":"O"
-      },
-      {
-         "qText":"2371677.699280",
-         "qNum":2371677.6992800036,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2003",
-         "qNum":2003,
-         "qElemNumber":0,
-         "qState":"O"
-      },
-      {
-         "qText":"May",
-         "qNum":"NaN",
-         "qElemNumber":10,
-         "qState":"O"
-      },
-      {
-         "qText":"3443525.244935",
-         "qNum":3443525.244935011,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2003",
-         "qNum":2003,
-         "qElemNumber":0,
-         "qState":"O"
-      },
-      {
-         "qText":"Jun",
-         "qNum":"NaN",
-         "qElemNumber":11,
-         "qState":"O"
-      },
-      {
-         "qText":"2542671.934499",
-         "qNum":2542671.9344990086,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2003",
-         "qNum":2003,
-         "qElemNumber":0,
-         "qState":"O"
-      },
-      {
-         "qText":"Jul",
-         "qNum":"NaN",
-         "qElemNumber":0,
-         "qState":"O"
-      },
-      {
-         "qText":"3554092.316679",
-         "qNum":3554092.316679237,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2003",
-         "qNum":2003,
-         "qElemNumber":0,
-         "qState":"O"
-      },
-      {
-         "qText":"Aug",
-         "qNum":"NaN",
-         "qElemNumber":1,
-         "qState":"O"
-      },
-      {
-         "qText":"5068341.511597",
-         "qNum":5068341.511596655,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2003",
-         "qNum":2003,
-         "qElemNumber":0,
-         "qState":"O"
-      },
-      {
-         "qText":"Sep",
-         "qNum":"NaN",
-         "qElemNumber":2,
-         "qState":"O"
-      },
-      {
-         "qText":"5059473.217795",
-         "qNum":5059473.217794676,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2003",
-         "qNum":2003,
-         "qElemNumber":0,
-         "qState":"O"
-      },
-      {
-         "qText":"Oct",
-         "qNum":"NaN",
-         "qElemNumber":3,
-         "qState":"O"
-      },
-      {
-         "qText":"3364506.257556",
-         "qNum":3364506.2575557283,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2003",
-         "qNum":2003,
-         "qElemNumber":0,
-         "qState":"O"
-      },
-      {
-         "qText":"Nov",
-         "qNum":"NaN",
-         "qElemNumber":4,
-         "qState":"O"
-      },
-      {
-         "qText":"4683867.045304",
-         "qNum":4683867.045303716,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2003",
-         "qNum":2003,
-         "qElemNumber":0,
-         "qState":"O"
-      },
-      {
-         "qText":"Dec",
-         "qNum":"NaN",
-         "qElemNumber":5,
-         "qState":"O"
-      },
-      {
-         "qText":"5243008.129803",
-         "qNum":5243008.129802935,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2004",
-         "qNum":2004,
-         "qElemNumber":1,
-         "qState":"O"
-      },
-      {
-         "qText":"Jan",
-         "qNum":"NaN",
-         "qElemNumber":6,
-         "qState":"O"
-      },
-      {
-         "qText":"3009197.415588",
-         "qNum":3009197.4155875226,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2004",
-         "qNum":2004,
-         "qElemNumber":1,
-         "qState":"O"
-      },
-      {
-         "qText":"Feb",
-         "qNum":"NaN",
-         "qElemNumber":7,
-         "qState":"O"
-      },
-      {
-         "qText":"4167855.429602",
-         "qNum":4167855.4296018034,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2004",
-         "qNum":2004,
-         "qElemNumber":1,
-         "qState":"O"
-      },
-      {
-         "qText":"Mar",
-         "qNum":"NaN",
-         "qElemNumber":8,
-         "qState":"O"
-      },
-      {
-         "qText":"4221323.432554",
-         "qNum":4221323.432553816,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2004",
-         "qNum":2004,
-         "qElemNumber":1,
-         "qState":"O"
-      },
-      {
-         "qText":"Apr",
-         "qNum":"NaN",
-         "qElemNumber":9,
-         "qState":"O"
-      },
-      {
-         "qText":"3820583.492071",
-         "qNum":3820583.4920708947,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2004",
-         "qNum":2004,
-         "qElemNumber":1,
-         "qState":"O"
-      },
-      {
-         "qText":"May",
-         "qNum":"NaN",
-         "qElemNumber":10,
-         "qState":"O"
-      },
-      {
-         "qText":"5194121.522905",
-         "qNum":5194121.522904999,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2004",
-         "qNum":2004,
-         "qElemNumber":1,
-         "qState":"O"
-      },
-      {
-         "qText":"Jun",
-         "qNum":"NaN",
-         "qElemNumber":11,
-         "qState":"O"
-      },
-      {
-         "qText":"5364840.179339",
-         "qNum":5364840.179339007,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2004",
-         "qNum":2004,
-         "qElemNumber":1,
-         "qState":"O"
-      },
-      {
-         "qText":"Jul",
-         "qNum":"NaN",
-         "qElemNumber":0,
-         "qState":"O"
-      },
-      {
-         "qText":"50840.630000",
-         "qNum":50840.62999999974,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2002",
-         "qNum":2002,
-         "qElemNumber":2,
-         "qState":"O"
-      },
-      {
-         "qText":"Jan",
-         "qNum":"NaN",
-         "qElemNumber":6,
-         "qState":"O"
-      },
-      {
-         "qText":"1309863.251140",
-         "qNum":1309863.2511400015,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2002",
-         "qNum":2002,
-         "qElemNumber":2,
-         "qState":"O"
-      },
-      {
-         "qText":"Feb",
-         "qNum":"NaN",
-         "qElemNumber":7,
-         "qState":"O"
-      },
-      {
-         "qText":"2451605.624358",
-         "qNum":2451605.624357999,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2002",
-         "qNum":2002,
-         "qElemNumber":2,
-         "qState":"O"
-      },
-      {
-         "qText":"Mar",
-         "qNum":"NaN",
-         "qElemNumber":8,
-         "qState":"O"
-      },
-      {
-         "qText":"2099415.615800",
-         "qNum":2099415.6157999993,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2002",
-         "qNum":2002,
-         "qElemNumber":2,
-         "qState":"O"
-      },
-      {
-         "qText":"Apr",
-         "qNum":"NaN",
-         "qElemNumber":9,
-         "qState":"O"
-      },
-      {
-         "qText":"1546592.229180",
-         "qNum":1546592.2291800014,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2002",
-         "qNum":2002,
-         "qElemNumber":2,
-         "qState":"O"
-      },
-      {
-         "qText":"May",
-         "qNum":"NaN",
-         "qElemNumber":10,
-         "qState":"O"
-      },
-      {
-         "qText":"2942672.909428",
-         "qNum":2942672.9094280056,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2002",
-         "qNum":2002,
-         "qElemNumber":2,
-         "qState":"O"
-      },
-      {
-         "qText":"Jun",
-         "qNum":"NaN",
-         "qElemNumber":11,
-         "qState":"O"
-      },
-      {
-         "qText":"1678567.416532",
-         "qNum":1678567.4165319994,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2002",
-         "qNum":2002,
-         "qElemNumber":2,
-         "qState":"O"
-      },
-      {
-         "qText":"Jul",
-         "qNum":"NaN",
-         "qElemNumber":0,
-         "qState":"O"
-      },
-      {
-         "qText":"2894054.677938",
-         "qNum":2894054.677938009,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2002",
-         "qNum":2002,
-         "qElemNumber":2,
-         "qState":"O"
-      },
-      {
-         "qText":"Aug",
-         "qNum":"NaN",
-         "qElemNumber":1,
-         "qState":"O"
-      },
-      {
-         "qText":"4147192.183951",
-         "qNum":4147192.183951016,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2002",
-         "qNum":2002,
-         "qElemNumber":2,
-         "qState":"O"
-      },
-      {
-         "qText":"Sep",
-         "qNum":"NaN",
-         "qElemNumber":2,
-         "qState":"O"
-      },
-      {
-         "qText":"3235826.189971",
-         "qNum":3235826.1899710195,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2002",
-         "qNum":2002,
-         "qElemNumber":2,
-         "qState":"O"
-      },
-      {
-         "qText":"Oct",
-         "qNum":"NaN",
-         "qElemNumber":3,
-         "qState":"O"
-      },
-      {
-         "qText":"2217544.445625",
-         "qNum":2217544.445624994,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2002",
-         "qNum":2002,
-         "qElemNumber":2,
-         "qState":"O"
-      },
-      {
-         "qText":"Nov",
-         "qNum":"NaN",
-         "qElemNumber":4,
-         "qState":"O"
-      },
-      {
-         "qText":"3388911.414685",
-         "qNum":3388911.4146850132,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2002",
-         "qNum":2002,
-         "qElemNumber":2,
-         "qState":"O"
-      },
-      {
-         "qText":"Dec",
-         "qNum":"NaN",
-         "qElemNumber":5,
-         "qState":"O"
-      },
-      {
-         "qText":"2762527.215017",
-         "qNum":2762527.2150170123,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2001",
-         "qNum":2001,
-         "qElemNumber":3,
-         "qState":"O"
-      },
-      {
-         "qText":"Jul",
-         "qNum":"NaN",
-         "qElemNumber":0,
-         "qState":"O"
-      },
-      {
-         "qText":"962716.741700",
-         "qNum":962716.741700002,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2001",
-         "qNum":2001,
-         "qElemNumber":3,
-         "qState":"O"
-      },
-      {
-         "qText":"Aug",
-         "qNum":"NaN",
-         "qElemNumber":1,
-         "qState":"O"
-      },
-      {
-         "qText":"2044600.003338",
-         "qNum":2044600.0033379968,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2001",
-         "qNum":2001,
-         "qElemNumber":3,
-         "qState":"O"
-      },
-      {
-         "qText":"Sep",
-         "qNum":"NaN",
-         "qElemNumber":2,
-         "qState":"O"
-      },
-      {
-         "qText":"1639840.108976",
-         "qNum":1639840.1089759984,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2001",
-         "qNum":2001,
-         "qElemNumber":3,
-         "qState":"O"
-      },
-      {
-         "qText":"Oct",
-         "qNum":"NaN",
-         "qElemNumber":3,
-         "qState":"O"
-      },
-      {
-         "qText":"1358050.470270",
-         "qNum":1358050.4702700009,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2001",
-         "qNum":2001,
-         "qElemNumber":3,
-         "qState":"O"
-      },
-      {
-         "qText":"Nov",
-         "qNum":"NaN",
-         "qElemNumber":4,
-         "qState":"O"
-      },
-      {
-         "qText":"2868129.203304",
-         "qNum":2868129.203304005,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ],
-   [
-      {
-         "qText":"2001",
-         "qNum":2001,
-         "qElemNumber":3,
-         "qState":"O"
-      },
-      {
-         "qText":"Dec",
-         "qNum":"NaN",
-         "qElemNumber":5,
-         "qState":"O"
-      },
-      {
-         "qText":"2458472.434226",
-         "qNum":2458472.434225998,
-         "qElemNumber":0,
-         "qState":"L"
-      }
-   ]
+[{"qText":"Jan","qNum":1,"qElemNumber":0,"qState":"O"},{"qText":"Alcoholic Beverages","qNum":"NaN","qElemNumber":0,"qState":"O"},{"qText":"12,126","qNum":12126,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Jan","qNum":1,"qElemNumber":0,"qState":"O"},{"qText":"Baking Goods","qNum":"NaN","qElemNumber":2,"qState":"O"},{"qText":"5,616","qNum":5616,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Jan","qNum":1,"qElemNumber":0,"qState":"O"},{"qText":"Beverages","qNum":"NaN","qElemNumber":3,"qState":"O"},{"qText":"11,017","qNum":11017,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Jan","qNum":1,"qElemNumber":0,"qState":"O"},{"qText":"Canned Foods","qNum":"NaN","qElemNumber":5,"qState":"O"},{"qText":"5,198","qNum":5198,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Jan","qNum":1,"qElemNumber":0,"qState":"O"},{"qText":"Dairy","qNum":"NaN","qElemNumber":7,"qState":"O"},{"qText":"7,944","qNum":7944,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Jan","qNum":1,"qElemNumber":0,"qState":"O"},{"qText":"Deli","qNum":"NaN","qElemNumber":8,"qState":"O"},{"qText":"19,411","qNum":19411,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Jan","qNum":1,"qElemNumber":0,"qState":"O"},{"qText":"Frozen Foods","qNum":"NaN","qElemNumber":10,"qState":"O"},{"qText":"16,111","qNum":16111,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Jan","qNum":1,"qElemNumber":0,"qState":"O"},{"qText":"Produce","qNum":"NaN","qElemNumber":12,"qState":"O"},{"qText":"7,634","qNum":7634,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Jan","qNum":1,"qElemNumber":0,"qState":"O"},{"qText":"Snack Foods","qNum":"NaN","qElemNumber":14,"qState":"O"},{"qText":"9,875","qNum":9875,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Jan","qNum":1,"qElemNumber":0,"qState":"O"},{"qText":"Others","qNum":"NaN","qElemNumber":-3,"qState":"L","qIsOtherCell":true},{"qText":"3,488","qNum":3488,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Feb","qNum":2,"qElemNumber":1,"qState":"O"},{"qText":"Alcoholic Beverages","qNum":"NaN","qElemNumber":0,"qState":"O"},{"qText":"14,822","qNum":14822,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Feb","qNum":2,"qElemNumber":1,"qState":"O"},{"qText":"Baking Goods","qNum":"NaN","qElemNumber":2,"qState":"O"},{"qText":"4,749","qNum":4749.1,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Feb","qNum":2,"qElemNumber":1,"qState":"O"},{"qText":"Beverages","qNum":"NaN","qElemNumber":3,"qState":"O"},{"qText":"3,799","qNum":3799,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Feb","qNum":2,"qElemNumber":1,"qState":"O"},{"qText":"Canned Foods","qNum":"NaN","qElemNumber":5,"qState":"O"},{"qText":"5,154","qNum":5154,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Feb","qNum":2,"qElemNumber":1,"qState":"O"},{"qText":"Dairy","qNum":"NaN","qElemNumber":7,"qState":"O"},{"qText":"4,600","qNum":4600,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Feb","qNum":2,"qElemNumber":1,"qState":"O"},{"qText":"Deli","qNum":"NaN","qElemNumber":8,"qState":"O"},{"qText":"14,260","qNum":14260,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Feb","qNum":2,"qElemNumber":1,"qState":"O"},{"qText":"Frozen Foods","qNum":"NaN","qElemNumber":10,"qState":"O"},{"qText":"14,701","qNum":14701,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Feb","qNum":2,"qElemNumber":1,"qState":"O"},{"qText":"Produce","qNum":"NaN","qElemNumber":12,"qState":"O"},{"qText":"11,991","qNum":11991,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Feb","qNum":2,"qElemNumber":1,"qState":"O"},{"qText":"Snack Foods","qNum":"NaN","qElemNumber":14,"qState":"O"},{"qText":"5,599","qNum":5599,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Feb","qNum":2,"qElemNumber":1,"qState":"O"},{"qText":"Others","qNum":"NaN","qElemNumber":-3,"qState":"L","qIsOtherCell":true},{"qText":"5,715","qNum":5715,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Mar","qNum":3,"qElemNumber":2,"qState":"O"},{"qText":"Alcoholic Beverages","qNum":"NaN","qElemNumber":0,"qState":"O"},{"qText":"19,468","qNum":19468,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Mar","qNum":3,"qElemNumber":2,"qState":"O"},{"qText":"Baking Goods","qNum":"NaN","qElemNumber":2,"qState":"O"},{"qText":"6,123","qNum":6123,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Mar","qNum":3,"qElemNumber":2,"qState":"O"},{"qText":"Beverages","qNum":"NaN","qElemNumber":3,"qState":"O"},{"qText":"19,026","qNum":19026,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Mar","qNum":3,"qElemNumber":2,"qState":"O"},{"qText":"Canned Foods","qNum":"NaN","qElemNumber":5,"qState":"O"},{"qText":"5,974","qNum":5974,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Mar","qNum":3,"qElemNumber":2,"qState":"O"},{"qText":"Dairy","qNum":"NaN","qElemNumber":7,"qState":"O"},{"qText":"3,831","qNum":3831,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Mar","qNum":3,"qElemNumber":2,"qState":"O"},{"qText":"Deli","qNum":"NaN","qElemNumber":8,"qState":"O"},{"qText":"7,344","qNum":7344,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Mar","qNum":3,"qElemNumber":2,"qState":"O"},{"qText":"Frozen Foods","qNum":"NaN","qElemNumber":10,"qState":"O"},{"qText":"8,317","qNum":8317,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Mar","qNum":3,"qElemNumber":2,"qState":"O"},{"qText":"Produce","qNum":"NaN","qElemNumber":12,"qState":"O"},{"qText":"23,990","qNum":23990,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Mar","qNum":3,"qElemNumber":2,"qState":"O"},{"qText":"Snack Foods","qNum":"NaN","qElemNumber":14,"qState":"O"},{"qText":"4,576","qNum":4576,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Mar","qNum":3,"qElemNumber":2,"qState":"O"},{"qText":"Others","qNum":"NaN","qElemNumber":-3,"qState":"L","qIsOtherCell":true},{"qText":"3,282","qNum":3282,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Apr","qNum":4,"qElemNumber":3,"qState":"O"},{"qText":"Alcoholic Beverages","qNum":"NaN","qElemNumber":0,"qState":"O"},{"qText":"15,939","qNum":15939,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Apr","qNum":4,"qElemNumber":3,"qState":"O"},{"qText":"Baking Goods","qNum":"NaN","qElemNumber":2,"qState":"O"},{"qText":"6,386","qNum":6386,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Apr","qNum":4,"qElemNumber":3,"qState":"O"},{"qText":"Beverages","qNum":"NaN","qElemNumber":3,"qState":"O"},{"qText":"20,961","qNum":20961,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Apr","qNum":4,"qElemNumber":3,"qState":"O"},{"qText":"Canned Foods","qNum":"NaN","qElemNumber":5,"qState":"O"},{"qText":"12,590","qNum":12590,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Apr","qNum":4,"qElemNumber":3,"qState":"O"},{"qText":"Dairy","qNum":"NaN","qElemNumber":7,"qState":"O"},{"qText":"4,040","qNum":4040,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Apr","qNum":4,"qElemNumber":3,"qState":"O"},{"qText":"Deli","qNum":"NaN","qElemNumber":8,"qState":"O"},{"qText":"14,168","qNum":14168,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Apr","qNum":4,"qElemNumber":3,"qState":"O"},{"qText":"Frozen Foods","qNum":"NaN","qElemNumber":10,"qState":"O"},{"qText":"9,114","qNum":9114,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Apr","qNum":4,"qElemNumber":3,"qState":"O"},{"qText":"Produce","qNum":"NaN","qElemNumber":12,"qState":"O"},{"qText":"13,596","qNum":13596,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Apr","qNum":4,"qElemNumber":3,"qState":"O"},{"qText":"Snack Foods","qNum":"NaN","qElemNumber":14,"qState":"O"},{"qText":"4,779","qNum":4779,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Apr","qNum":4,"qElemNumber":3,"qState":"O"},{"qText":"Others","qNum":"NaN","qElemNumber":-3,"qState":"L","qIsOtherCell":true},{"qText":"5,909","qNum":5909,"qElemNumber":0,"qState":"L"}],
+[{"qText":"May","qNum":5,"qElemNumber":4,"qState":"O"},{"qText":"Alcoholic Beverages","qNum":"NaN","qElemNumber":0,"qState":"O"},{"qText":"15,781","qNum":15781,"qElemNumber":0,"qState":"L"}],
+[{"qText":"May","qNum":5,"qElemNumber":4,"qState":"O"},{"qText":"Baking Goods","qNum":"NaN","qElemNumber":2,"qState":"O"},{"qText":"4,871","qNum":4871.1,"qElemNumber":0,"qState":"L"}],
+[{"qText":"May","qNum":5,"qElemNumber":4,"qState":"O"},{"qText":"Beverages","qNum":"NaN","qElemNumber":3,"qState":"O"},{"qText":"3,275","qNum":3275,"qElemNumber":0,"qState":"L"}],
+[{"qText":"May","qNum":5,"qElemNumber":4,"qState":"O"},{"qText":"Canned Foods","qNum":"NaN","qElemNumber":5,"qState":"O"},{"qText":"6,226","qNum":6226,"qElemNumber":0,"qState":"L"}],
+[{"qText":"May","qNum":5,"qElemNumber":4,"qState":"O"},{"qText":"Dairy","qNum":"NaN","qElemNumber":7,"qState":"O"},{"qText":"6,937","qNum":6937,"qElemNumber":0,"qState":"L"}],
+[{"qText":"May","qNum":5,"qElemNumber":4,"qState":"O"},{"qText":"Deli","qNum":"NaN","qElemNumber":8,"qState":"O"},{"qText":"20,027","qNum":20027,"qElemNumber":0,"qState":"L"}],
+[{"qText":"May","qNum":5,"qElemNumber":4,"qState":"O"},{"qText":"Frozen Foods","qNum":"NaN","qElemNumber":10,"qState":"O"},{"qText":"8,306","qNum":8306,"qElemNumber":0,"qState":"L"}],
+[{"qText":"May","qNum":5,"qElemNumber":4,"qState":"O"},{"qText":"Produce","qNum":"NaN","qElemNumber":12,"qState":"O"},{"qText":"10,039","qNum":10039,"qElemNumber":0,"qState":"L"}],
+[{"qText":"May","qNum":5,"qElemNumber":4,"qState":"O"},{"qText":"Snack Foods","qNum":"NaN","qElemNumber":14,"qState":"O"},{"qText":"5,481","qNum":5481,"qElemNumber":0,"qState":"L"}],
+[{"qText":"May","qNum":5,"qElemNumber":4,"qState":"O"},{"qText":"Others","qNum":"NaN","qElemNumber":-3,"qState":"L","qIsOtherCell":true},{"qText":"5,361","qNum":5361,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Jun","qNum":6,"qElemNumber":5,"qState":"O"},{"qText":"Alcoholic Beverages","qNum":"NaN","qElemNumber":0,"qState":"O"},{"qText":"10,338","qNum":10338,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Jun","qNum":6,"qElemNumber":5,"qState":"O"},{"qText":"Baking Goods","qNum":"NaN","qElemNumber":2,"qState":"O"},{"qText":"4,448","qNum":4448,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Jun","qNum":6,"qElemNumber":5,"qState":"O"},{"qText":"Beverages","qNum":"NaN","qElemNumber":3,"qState":"O"},{"qText":"5,657","qNum":5657,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Jun","qNum":6,"qElemNumber":5,"qState":"O"},{"qText":"Canned Foods","qNum":"NaN","qElemNumber":5,"qState":"O"},{"qText":"4,261","qNum":4261,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Jun","qNum":6,"qElemNumber":5,"qState":"O"},{"qText":"Dairy","qNum":"NaN","qElemNumber":7,"qState":"O"},{"qText":"8,294","qNum":8294,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Jun","qNum":6,"qElemNumber":5,"qState":"O"},{"qText":"Deli","qNum":"NaN","qElemNumber":8,"qState":"O"},{"qText":"10,718","qNum":10718,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Jun","qNum":6,"qElemNumber":5,"qState":"O"},{"qText":"Frozen Foods","qNum":"NaN","qElemNumber":10,"qState":"O"},{"qText":"5,649","qNum":5649,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Jun","qNum":6,"qElemNumber":5,"qState":"O"},{"qText":"Produce","qNum":"NaN","qElemNumber":12,"qState":"O"},{"qText":"8,686","qNum":8686,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Jun","qNum":6,"qElemNumber":5,"qState":"O"},{"qText":"Snack Foods","qNum":"NaN","qElemNumber":14,"qState":"O"},{"qText":"6,121","qNum":6121,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Jun","qNum":6,"qElemNumber":5,"qState":"O"},{"qText":"Others","qNum":"NaN","qElemNumber":-3,"qState":"L","qIsOtherCell":true},{"qText":"3,206","qNum":3206,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Jul","qNum":7,"qElemNumber":6,"qState":"O"},{"qText":"Alcoholic Beverages","qNum":"NaN","qElemNumber":0,"qState":"O"},{"qText":"8,071","qNum":8071,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Jul","qNum":7,"qElemNumber":6,"qState":"O"},{"qText":"Baking Goods","qNum":"NaN","qElemNumber":2,"qState":"O"},{"qText":"3,539","qNum":3539,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Jul","qNum":7,"qElemNumber":6,"qState":"O"},{"qText":"Beverages","qNum":"NaN","qElemNumber":3,"qState":"O"},{"qText":"9,625","qNum":9625,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Jul","qNum":7,"qElemNumber":6,"qState":"O"},{"qText":"Canned Foods","qNum":"NaN","qElemNumber":5,"qState":"O"},{"qText":"4,136","qNum":4136,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Jul","qNum":7,"qElemNumber":6,"qState":"O"},{"qText":"Dairy","qNum":"NaN","qElemNumber":7,"qState":"O"},{"qText":"7,406","qNum":7406,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Jul","qNum":7,"qElemNumber":6,"qState":"O"},{"qText":"Deli","qNum":"NaN","qElemNumber":8,"qState":"O"},{"qText":"13,525","qNum":13525,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Jul","qNum":7,"qElemNumber":6,"qState":"O"},{"qText":"Frozen Foods","qNum":"NaN","qElemNumber":10,"qState":"O"},{"qText":"9,528","qNum":9528,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Jul","qNum":7,"qElemNumber":6,"qState":"O"},{"qText":"Produce","qNum":"NaN","qElemNumber":12,"qState":"O"},{"qText":"4,794","qNum":4794,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Jul","qNum":7,"qElemNumber":6,"qState":"O"},{"qText":"Snack Foods","qNum":"NaN","qElemNumber":14,"qState":"O"},{"qText":"8,062","qNum":8062,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Jul","qNum":7,"qElemNumber":6,"qState":"O"},{"qText":"Others","qNum":"NaN","qElemNumber":-3,"qState":"L","qIsOtherCell":true},{"qText":"2,649","qNum":2649,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Aug","qNum":8,"qElemNumber":7,"qState":"O"},{"qText":"Alcoholic Beverages","qNum":"NaN","qElemNumber":0,"qState":"O"},{"qText":"9,609","qNum":9609,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Aug","qNum":8,"qElemNumber":7,"qState":"O"},{"qText":"Baked Goods","qNum":"NaN","qElemNumber":1,"qState":"O"},{"qText":"27,895","qNum":27895,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Aug","qNum":8,"qElemNumber":7,"qState":"O"},{"qText":"Canned Foods","qNum":"NaN","qElemNumber":5,"qState":"O"},{"qText":"22,473","qNum":22473,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Aug","qNum":8,"qElemNumber":7,"qState":"O"},{"qText":"Dairy","qNum":"NaN","qElemNumber":7,"qState":"O"},{"qText":"8,227","qNum":8227,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Aug","qNum":8,"qElemNumber":7,"qState":"O"},{"qText":"Deli","qNum":"NaN","qElemNumber":8,"qState":"O"},{"qText":"7,951","qNum":7951,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Aug","qNum":8,"qElemNumber":7,"qState":"O"},{"qText":"Frozen Foods","qNum":"NaN","qElemNumber":10,"qState":"O"},{"qText":"12,650","qNum":12650,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Aug","qNum":8,"qElemNumber":7,"qState":"O"},{"qText":"Produce","qNum":"NaN","qElemNumber":12,"qState":"O"},{"qText":"12,039","qNum":12039,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Aug","qNum":8,"qElemNumber":7,"qState":"O"},{"qText":"Snack Foods","qNum":"NaN","qElemNumber":14,"qState":"O"},{"qText":"4,084","qNum":4084,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Aug","qNum":8,"qElemNumber":7,"qState":"O"},{"qText":"Starchy Foods","qNum":"NaN","qElemNumber":16,"qState":"O"},{"qText":"5,443","qNum":5443,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Aug","qNum":8,"qElemNumber":7,"qState":"O"},{"qText":"Others","qNum":"NaN","qElemNumber":-3,"qState":"L","qIsOtherCell":true},{"qText":"6,388","qNum":6388,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Sep","qNum":9,"qElemNumber":8,"qState":"O"},{"qText":"Alcoholic Beverages","qNum":"NaN","qElemNumber":0,"qState":"O"},{"qText":"12,387","qNum":12387,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Sep","qNum":9,"qElemNumber":8,"qState":"O"},{"qText":"Beverages","qNum":"NaN","qElemNumber":3,"qState":"O"},{"qText":"23,427","qNum":23427,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Sep","qNum":9,"qElemNumber":8,"qState":"O"},{"qText":"Canned Foods","qNum":"NaN","qElemNumber":5,"qState":"O"},{"qText":"37,708","qNum":37708,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Sep","qNum":9,"qElemNumber":8,"qState":"O"},{"qText":"Dairy","qNum":"NaN","qElemNumber":7,"qState":"O"},{"qText":"6,207","qNum":6207,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Sep","qNum":9,"qElemNumber":8,"qState":"O"},{"qText":"Deli","qNum":"NaN","qElemNumber":8,"qState":"O"},{"qText":"8,509","qNum":8509,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Sep","qNum":9,"qElemNumber":8,"qState":"O"},{"qText":"Frozen Foods","qNum":"NaN","qElemNumber":10,"qState":"O"},{"qText":"8,366","qNum":8366,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Sep","qNum":9,"qElemNumber":8,"qState":"O"},{"qText":"Produce","qNum":"NaN","qElemNumber":12,"qState":"O"},{"qText":"18,118","qNum":18118,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Sep","qNum":9,"qElemNumber":8,"qState":"O"},{"qText":"Snack Foods","qNum":"NaN","qElemNumber":14,"qState":"O"},{"qText":"4,759","qNum":4759,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Sep","qNum":9,"qElemNumber":8,"qState":"O"},{"qText":"Starchy Foods","qNum":"NaN","qElemNumber":16,"qState":"O"},{"qText":"2,818","qNum":2818,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Sep","qNum":9,"qElemNumber":8,"qState":"O"},{"qText":"Others","qNum":"NaN","qElemNumber":-3,"qState":"L","qIsOtherCell":true},{"qText":"4,106","qNum":4106,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Oct","qNum":10,"qElemNumber":9,"qState":"O"},{"qText":"Alcoholic Beverages","qNum":"NaN","qElemNumber":0,"qState":"O"},{"qText":"8,193","qNum":8193,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Oct","qNum":10,"qElemNumber":9,"qState":"O"},{"qText":"Baked Goods","qNum":"NaN","qElemNumber":1,"qState":"O"},{"qText":"27,910","qNum":27910,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Oct","qNum":10,"qElemNumber":9,"qState":"O"},{"qText":"Canned Foods","qNum":"NaN","qElemNumber":5,"qState":"O"},{"qText":"10,143","qNum":10143,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Oct","qNum":10,"qElemNumber":9,"qState":"O"},{"qText":"Dairy","qNum":"NaN","qElemNumber":7,"qState":"O"},{"qText":"8,037","qNum":8037,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Oct","qNum":10,"qElemNumber":9,"qState":"O"},{"qText":"Deli","qNum":"NaN","qElemNumber":8,"qState":"O"},{"qText":"9,315","qNum":9315,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Oct","qNum":10,"qElemNumber":9,"qState":"O"},{"qText":"Frozen Foods","qNum":"NaN","qElemNumber":10,"qState":"O"},{"qText":"12,362","qNum":12362,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Oct","qNum":10,"qElemNumber":9,"qState":"O"},{"qText":"Produce","qNum":"NaN","qElemNumber":12,"qState":"O"},{"qText":"10,194","qNum":10194,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Oct","qNum":10,"qElemNumber":9,"qState":"O"},{"qText":"Snack Foods","qNum":"NaN","qElemNumber":14,"qState":"O"},{"qText":"5,119","qNum":5119,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Oct","qNum":10,"qElemNumber":9,"qState":"O"},{"qText":"Starchy Foods","qNum":"NaN","qElemNumber":16,"qState":"O"},{"qText":"5,500","qNum":5500,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Oct","qNum":10,"qElemNumber":9,"qState":"O"},{"qText":"Others","qNum":"NaN","qElemNumber":-3,"qState":"L","qIsOtherCell":true},{"qText":"7,855","qNum":7855,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Nov","qNum":11,"qElemNumber":10,"qState":"O"},{"qText":"Alcoholic Beverages","qNum":"NaN","qElemNumber":0,"qState":"O"},{"qText":"15,974","qNum":15974,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Nov","qNum":11,"qElemNumber":10,"qState":"O"},{"qText":"Baking Goods","qNum":"NaN","qElemNumber":2,"qState":"O"},{"qText":"3,261","qNum":3261.1,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Nov","qNum":11,"qElemNumber":10,"qState":"O"},{"qText":"Beverages","qNum":"NaN","qElemNumber":3,"qState":"O"},{"qText":"2,802","qNum":2802,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Nov","qNum":11,"qElemNumber":10,"qState":"O"},{"qText":"Canned Foods","qNum":"NaN","qElemNumber":5,"qState":"O"},{"qText":"19,603","qNum":19603,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Nov","qNum":11,"qElemNumber":10,"qState":"O"},{"qText":"Dairy","qNum":"NaN","qElemNumber":7,"qState":"O"},{"qText":"6,241","qNum":6241,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Nov","qNum":11,"qElemNumber":10,"qState":"O"},{"qText":"Deli","qNum":"NaN","qElemNumber":8,"qState":"O"},{"qText":"12,906","qNum":12906,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Nov","qNum":11,"qElemNumber":10,"qState":"O"},{"qText":"Frozen Foods","qNum":"NaN","qElemNumber":10,"qState":"O"},{"qText":"10,895","qNum":10895,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Nov","qNum":11,"qElemNumber":10,"qState":"O"},{"qText":"Produce","qNum":"NaN","qElemNumber":12,"qState":"O"},{"qText":"12,251","qNum":12251,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Nov","qNum":11,"qElemNumber":10,"qState":"O"},{"qText":"Snack Foods","qNum":"NaN","qElemNumber":14,"qState":"O"},{"qText":"3,535","qNum":3535,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Nov","qNum":11,"qElemNumber":10,"qState":"O"},{"qText":"Others","qNum":"NaN","qElemNumber":-3,"qState":"L","qIsOtherCell":true},{"qText":"4,801","qNum":4801,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Dec","qNum":12,"qElemNumber":11,"qState":"O"},{"qText":"Alcoholic Beverages","qNum":"NaN","qElemNumber":0,"qState":"O"},{"qText":"9,313","qNum":9313,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Dec","qNum":12,"qElemNumber":11,"qState":"O"},{"qText":"Baking Goods","qNum":"NaN","qElemNumber":2,"qState":"O"},{"qText":"3,483","qNum":3483,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Dec","qNum":12,"qElemNumber":11,"qState":"O"},{"qText":"Beverages","qNum":"NaN","qElemNumber":3,"qState":"O"},{"qText":"4,325","qNum":4325,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Dec","qNum":12,"qElemNumber":11,"qState":"O"},{"qText":"Canned Foods","qNum":"NaN","qElemNumber":5,"qState":"O"},{"qText":"2,724","qNum":2724,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Dec","qNum":12,"qElemNumber":11,"qState":"O"},{"qText":"Dairy","qNum":"NaN","qElemNumber":7,"qState":"O"},{"qText":"8,167","qNum":8167,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Dec","qNum":12,"qElemNumber":11,"qState":"O"},{"qText":"Deli","qNum":"NaN","qElemNumber":8,"qState":"O"},{"qText":"12,905","qNum":12905,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Dec","qNum":12,"qElemNumber":11,"qState":"O"},{"qText":"Frozen Foods","qNum":"NaN","qElemNumber":10,"qState":"O"},{"qText":"2,916","qNum":2916,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Dec","qNum":12,"qElemNumber":11,"qState":"O"},{"qText":"Produce","qNum":"NaN","qElemNumber":12,"qState":"O"},{"qText":"10,134","qNum":10134,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Dec","qNum":12,"qElemNumber":11,"qState":"O"},{"qText":"Snack Foods","qNum":"NaN","qElemNumber":14,"qState":"O"},{"qText":"6,432","qNum":6432,"qElemNumber":0,"qState":"L"}],
+[{"qText":"Dec","qNum":12,"qElemNumber":11,"qState":"O"},{"qText":"Others","qNum":"NaN","qElemNumber":-3,"qState":"L","qIsOtherCell":true},{"qText":"3,633","qNum":3633,"qElemNumber":0,"qState":"L"}]
 ]
-;				
-				$scope.data2 = [
-[{qText: "2012"},{qText: "January"},{qNum: 8216557.69190588, qText: "$8,216,558"}],
-//[{qText: "2012"},{qText: "February"},{qNum: 1678886.09688421, qText: "$1,678,886"}],
-[{qText: "2012"},{qText: "March"},{qNum: 6758411.77090081, qText: "$6,758,412"}],
-[{qText: "2012"},{qText: "April"},{qNum: 6729177.19344021, qText: "$6,729,177"}],
-[{qText: "2012"},{qText: "May"},{qNum: 4159811.50180759, qText: "$4,159,812"}],
-[{qText: "2012"},{qText: "June"},{qNum: 8560140.74739407, qText: "$8,560,141"}],
-[{qText: "2012"},{qText: "July"},{qNum: 4697270.2069956, qText: "$4,697,270"}],
-//[{qText: "2012"},{qText: "August"},{qNum: 3489857.30752409, qText: "$3,489,857"}],
-[{qText: "2012"},{qText: "September"},{qNum: 2824329.15692809, qText: "$2,824,329"}],
-[{qText: "2012"},{qText: "October"},{qNum: 2983824.00025901, qText: "$2,983,824"}],
-[{qText: "2012"},{qText: "November"},{qNum: 6986288.34865222, qText: "$6,986,288"}],
-[{qText: "2012"},{qText: "December"},{qNum: 7454911.27700937, qText: "$7,454,911"}],
-//[{qText: "2013"},{qText: "January"},{qNum: 3314225.12057077, qText: "$3,314,225"}],
-//[{qText: "2013"},{qText: "February"},{qNum: 3867154.15686122, qText: "$3,867,154"}],
-//[{qText: "2013"},{qText: "March"},{qNum: 1011947.68735133, qText: "$1,011,948"}],
-//[{qText: "2013"},{qText: "April"},{qNum: 1867014.07439439, qText: "$1,867,014"}],
-//[{qText: "2013"},{qText: "May"},{qNum: 1764771.31740971, qText: "$1,764,771"}],
-//[{qText: "2013"},{qText: "June"},{qNum: 862750.253627517, qText: "$862,750"}],
-//[{qText: "2013"},{qText: "July"},{qNum: 913397.900057612, qText: "$913,398"}],
-//[{qText: "2013"},{qText: "August"},{qNum: 4676667.32773313, qText: "$4,676,667"}],
-//[{qText: "2013"},{qText: "September"},{qNum: 4243298.84827118, qText: "$4,243,299"}],
-//[{qText: "2013"},{qText: "October"},{qNum: 3261345.35070393, qText: "$3,261,345"}],
-//[{qText: "2013"},{qText: "November"},{qNum: 4585937.24398727, qText: "$4,585,937"}],
-//[{qText: "2013"},{qText: "December"},{qNum: 8394006.77426958, qText: "$8,394,007"}],
-[{qText: "2014"},{qText: "January"},{qNum: 3629869.1227932, qText: "$3,629,869"}],
-//[{qText: "2014"},{qText: "February"},{qNum: 4868528.6192228, qText: "$4,868,529"}],
-[{qText: "2014"},{qText: "March"},{qNum: 7994277.17648903, qText: "$7,994,277"}],
-[{qText: "2014"},{qText: "April"},{qNum: 5613472.82381715, qText: "$5,613,473"}],
-[{qText: "2014"},{qText: "May"},{qNum: 9349416.12414852, qText: "$9,349,416"}],
-[{qText: "2014"},{qText: "June"},{qNum: 8562993.81943293, qText: "$8,562,994"}],
-[{qText: "2014"},{qText: "July"},{qNum: 3952543.22520447, qText: "$3,952,543"}],
-//[{qText: "2014"},{qText: "August"},{qNum: 229211.142056127, qText: "$229,211"}],
-//[{qText: "2014"},{qText: "September"},{qNum: 8891693.83611183, qText: "$8,891,694"}],
-[{qText: "2014"},{qText: "October"},{qNum: 8228404.96214335, qText: "$8,228,405"}],
-[{qText: "2014"},{qText: "November"},{qNum: 7652107.51751796, qText: "$7,652,108"}],
-[{qText: "2014"},{qText: "December"},{qNum: 6149863.60229994, qText: "$6,149,864"}],
-[{qText: "2015"},{qText: "January"},{qNum: 5401003.32575476, qText: "$5,401,003"}],
-//[{qText: "2015"},{qText: "February"},{qNum: 5944557.95218427, qText: "$5,944,558"}],
-[{qText: "2015"},{qText: "March"},{qNum: 4271294.56476552, qText: "$4,271,295"}],
-[{qText: "2015"},{qText: "April"},{qNum: 4647022.10818538, qText: "$4,647,022"}],
-[{qText: "2015"},{qText: "May"},{qNum: 8412908.19255074, qText: "$8,412,908"}],
-//[{qText: "2015"},{qText: "June"},{qNum: 7584710.30920053, qText: "$7,584,710"}],
-[{qText: "2015"},{qText: "July"},{qNum: 9947782.2866718, qText: "$9,947,782"}],
-[{qText: "2015"},{qText: "August"},{qNum: 8636768.2887174, qText: "$8,636,768"}],
-[{qText: "2015"},{qText: "September"},{qNum: 7954602.59199595, qText: "$7,954,603"}],
-[{qText: "2015"},{qText: "October"},{qNum: 3121701.48537651, qText: "$3,121,701"}],
-//[{qText: "2015"},{qText: "November"},{qNum: 9591810.38999614, qText: "$9,591,810"}],
-[{qText: "2015"},{qText: "December"},{qNum: 672421.36822655, qText: "$672,421"}],
-[{qText: "2016"},{qText: "January"},{qNum: 8051617.27701702, qText: "$8,051,617"}],
-//[{qText: "2016"},{qText: "February"},{qNum: 3627826.00209702, qText: "$3,627,826"}],
-[{qText: "2016"},{qText: "March"},{qNum: 9480785.76305856, qText: "$9,480,786"}],
-//[{qText: "2016"},{qText: "April"},{qNum: 7755676.00135768, qText: "$7,755,676"}],
-//[{qText: "2016"},{qText: "May"},{qNum: 1332579.30788357, qText: "$1,332,579"}],
-[{qText: "2016"},{qText: "June"},{qNum: 2405967.80233637, qText: "$2,405,968"}],
-				];
+;
+
+				$scope.data2 = [];
+                for (var i = 0; i < $scope.data1.length; i++) {
+                    if ($scope.data1[i][0].qText != "Feb" && Math.random() > 0.4) {
+                        $scope.data2.push($scope.data1[i]);
+                    }
+                }
+;
 
 $scope.oneDim1 = [
 [{qText: "January"},{qNum: 3314225.12057077, qText: "$3,314,225"}],
@@ -1014,6 +304,15 @@ $scope.oneDim2 = [
 						}
 					};
 				};
+                $scope.transpose = function() {
+                    if ($scope.g.nDims > 1) {
+                        for (var i = 0; i < $scope.data.length; i++) {
+                            var x = $scope.data[i][0];
+                            $scope.data[i][0] = $scope.data[i][1];
+                            $scope.data[i][1] = x;
+                        }
+                    }
+                }
 				$scope.doResize = function() {
 					var div = $("#myContainer");
 					if (div.width() == 700) {
@@ -1040,10 +339,11 @@ label, input, select {
 	font-size: 10pt;
 }
 </style>
-<div style="font-face: sans-serif; font-size: 11px">
+<div style="font-family: sans-serif; font-size: 11px">
 	<button type="button" ng-click="setData(1)">Full Data</button>
 	<button type="button" ng-click="setData(2)">Reduced Data</button>
 	<button type="button" ng-click="doResize()">Resize Toggle</button>
+    <button type="button" ng-click="transpose(); g.initData(); refresh()">Transpose</button>
 	<button type="button" ng-click="refresh()">Refresh</button>
 	<br><br>
 	<label>Bar orientation</label>
@@ -1061,11 +361,11 @@ label, input, select {
 		<option value="">No deltas</option>
 		<option value="showDeltas">Show Deltas</option>
 	</select>
-	<label>Bar Gap: <input size="3" type="text" ng-model="g.barGap" ng-change="refresh()" ng-model-options="{updateOn: 'blur'}"></label>
-	<label>Outer Gap: <input size="3" type="text" ng-model="g.outerGap" ng-change="refresh()" ng-model-options="{updateOn: 'blur'}"></label>
-	<label>Grid Height: <input size="3" type="text" ng-model="g.gridHeight" ng-change="refresh()" ng-model-options="{updateOn: 'blur'}"></label>
+	<label>Bar Gap: <input size="3" type="text" ng-model="g.barGap" ng-blur="refresh()"></label>
+	<label>Outer Gap: <input size="3" type="text" ng-model="g.outerGap" ng-blur="refresh()"></label>
+	<label>Grid Height: <input size="3" type="text" ng-model="g.gridHeight" ng-blur="refresh()"></label>
 	<br><br>
-	<label>Dimension title: <input size="10" type="text" ng-model="g.axisTitleD" ng-change="refresh()" ng-model-options="{updateOn: 'blur'}"></label>
+	<label>Dimension title: <input size="10" type="text" ng-model="g.axisTitleD" ng-blur="refresh()"></label>
 	<label>Dimension labels/title</label>
 	<select ng-model="g.labelTitleD" ng-change="refresh()">
 		<option value="B">Labels and Title</option>
@@ -1093,7 +393,7 @@ label, input, select {
 		<option value="W">Wide</option>
 	</select>
 	<br><br>
-	<label>Measure title: <input size="10" type="text" ng-model="g.axisTitleM" value="Sales Amount (USD)" ng-change="refresh()" ng-model-options="{updateOn: 'blur'}"></label>
+	<label>Measure title: <input size="10" type="text" ng-model="g.axisTitleM" value="Sales Amount (USD)" ng-blur="refresh()"></label>
 	<label>Measure labels/title</label>
 	<select ng-model="g.labelTitleM" ng-change="refresh()">
 		<option value="B">Labels and Title</option>
@@ -1128,7 +428,7 @@ label, input, select {
 		<option value="S">SI-Notation (K, M, etc)</option>
 		<option value="C">Custom</option>		
 	</select>
-	<label>Format: <input size="8" type="text" ng-model="g.axisFormatMs" ng-change="refresh()" ng-model-options="{updateOn: 'blur'}"></label>
+	<label>Format: <input size="8" type="text" ng-model="g.axisFormatMs" ng-blur="refresh()"></label>
 	<label>Ticks: </label>
 	<select ng-model="g.ticks" ng-change="refresh()">
 		<option value="1">1</option>
@@ -1154,7 +454,7 @@ label, input, select {
 		<option value="qlikView18">qlikView18</option>
 		<option value="qlikSense12">qlikSense12</option>
 	</select>
-	<label>Offset: <input size="5" type="text" ng-model="g.colorOffset" ng-change="refresh()" ng-model-options="{updateOn: 'blur'}"></label>
+	<label>Offset: <input size="5" type="text" ng-model="g.colorOffset" ng-blur="refresh()"></label>
 	<label>Background Color: </label>
 	<select ng-model="g.backgroundColor" ng-change="refresh()">
 		<option value="White">White</option>
@@ -1163,8 +463,8 @@ label, input, select {
 		<option value="#f2f2f2">#f2f2f2</option>
 	</select>
 	<br><br>
-	<label>Transition Delay: <input size="5" type="text" ng-model="g.transitionDelay" ng-change="refresh()" ng-model-options="{updateOn: 'blur'}"></label>
-	<label>Transition Duration: <input size="5" type="text" ng-model="g.transitionDuration" ng-change="refresh()" ng-model-options="{updateOn: 'blur'}"></label>
+	<label>Transition Delay: <input size="5" type="text" ng-model="g.transitionDelay" ng-blur="refresh()"></label>
+	<label>Transition Duration: <input size="5" type="text" ng-model="g.transitionDuration" ng-blur="refresh()"></label>
 	<select ng-model="g.ease" ng-change="refresh()">
 		<option value="linear">linear</option>
 		<option value="quad">quad</option>
@@ -1180,6 +480,11 @@ label, input, select {
 	<select ng-model="g.nDims" ng-change="setData(1); refresh()">
 		<option value="1">One</option>
 		<option value="2">Two</option>
+	</select>
+	<label>Single Color: </label>
+	<select ng-model="g.singleColor" ng-change="refresh()">
+		<option value="singleColor">Single Color</option>
+		<option value="">Multi-color</option>
 	</select>
 	<br><br>
 	<label>Show Legend: </label>
@@ -1200,12 +505,74 @@ label, input, select {
 		<option value="M">Medium</option>
 		<option value="W">Wide</option>
 	</select>
+    <label>Spacing: </label>
 	<select ng-model="g.legendSpacing" ng-change="refresh()">
 		<option value="N">Narrow</option>
 		<option value="M">Medium</option>
 		<option value="W">Wide</option>
 	</select>
 	<br><br>
+    <label>Text on Bars: </label>
+	<select ng-model="g.showTexts" ng-change="refresh()">
+		<option value="N">No text on bars</option>
+		<option value="B">Text on bars</option>
+		<option value="T">Show total</option>
+		<option value="A">Show both</option>
+	</select>
+    <label>Bar Show: </label>
+	<select ng-model="g.showDim" ng-change="refresh()">
+		<option value="M">Measure</option>
+		<option value="P" ng-if="g.normalized">Percent</option>
+		<option value="D">Dimension</option>
+	</select>
+    <label ng-if="g.showTexts == 'T' || g.showTexts == 'A'">Total Show: 
+	<select ng-model="g.showTot" ng-change="refresh()">
+		<option value="M">Measure</option>
+		<option value="D">Dimension</option>
+	</select></label>
+	<label>Inner Pad Horiz: <input size="3" type="text" ng-model="g.innerBarPadH" ng-change="refresh()"></label>
+	<label>Inner Pad Vert: <input size="3" type="text" ng-model="g.innerBarPadV" ng-change="refresh()"></label>
+    <label>Size: </label>
+	<select ng-model="g.textSizeAbs" ng-change="refresh()">
+		<option value="textSizeAbs">Fixed</option>
+		<option value="">Relative</option>
+	</select>
+	<label>Size factor: <input size="3" type="text" ng-model="g.textSizeFactor" ng-blur="refresh()"></label>
+	<label>Size: <input size="3" type="text" ng-model="g.textSize" ng-blur="refresh()"></label>
+    <br><br>
+    <label>Show if dots: </label>
+	<select ng-model="g.textDots" ng-change="refresh()">
+		<option value="textDots">Show if dots</option>
+		<option value="">No show</option>
+	</select>
+    <label>Text Color: </label>
+	<select ng-model="g.textColor" ng-change="refresh()">
+		<option value="Auto">Auto</option>
+		<option value="black">black</option>
+		<option value="white">white</option>
+		<option value="gray">gray</option>
+	</select>
+    <label>Vert Align: </label>
+	<select ng-model="g.vAlign" ng-change="refresh()">
+		<option value="C">Center</option>
+		<option value="T">Top</option>
+		<option value="B">Bottom</option>
+	</select>
+    <label>Horiz Align: </label>
+	<select ng-model="g.hAlign" ng-change="refresh()">
+		<option value="C">Center</option>
+		<option value="L">Left</option>
+		<option value="R">Right</option>
+	</select>
+	<label>Total format: </label>
+	<select ng-model="g.totalFormatM" ng-change="refresh()">
+		<option value="N">Number</option>
+		<option value="P">Percent</option>
+		<option value="S">SI-Notation (K, M, etc)</option>
+		<option value="C">Custom</option>		
+	</select>
+	<label>Format: <input size="8" type="text" ng-model="g.totalFormatMs" ng-blur="refresh()"></label>
+    <br><br>
 </div>
 		<div id="myContainer" class="qv-object-barsPlus" style="display: inline-block; width: 700px; height: 400px">
 			<bars-plus
@@ -1237,7 +604,22 @@ label, input, select {
 				axis-margin-m="M"
 				ticks="5"
 				axis-format-m="C"
-				axis-format-ms="s"
+				axis-format-ms=",.3s"
+
+                show-texts="N"
+                show-dim="M"
+                show-tot="M"
+                inner-bar-pad-h="4"
+                inner-bar-pad-v="2"
+                text-size-abs="textSizeAbs"
+                text-size-factor="1"
+                text-size="8"
+                text-dots="textDots"
+                text-color="Auto"
+                v-align="C"
+                h-align="C"
+				total-format-m="C"
+				total-format-ms=",.3s"
 				
 				transitions="transitions"
 				transition-delay="100"

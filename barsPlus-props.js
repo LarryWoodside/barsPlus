@@ -10,6 +10,7 @@
  *
  *	Version		Person			Date			Description
  *	V1.0.0		L. Woodside		19-Dec-2016		Initial Release
+ *  V1.1.0		L. Woodside		29-Dec-2016		Added text on bars
  *
 */
 function () {
@@ -464,6 +465,198 @@ function () {
 						component: "link",
 						label: "D3 format strings",
 						url: "https://github.com/d3/d3-3.x-api-reference/blob/master/Formatting.md"
+					}
+				}
+			},
+			barText: {
+				type: "items",
+				label: "Text on bars",
+				items: {
+					showTexts: {
+						type: "string",
+						component: "dropdown",
+						label: "Text on bars",
+						ref: "props.showTexts",
+						defaultValue: "N",
+						options: [
+							{ value: "N", label: "None"},
+							{ value: "B", label: "Inside Bars"},
+							{ value: "T", label: "Total"},
+							{ value: "A", label: "Both"}
+						]
+					},
+					showDim: {
+						type: "string",
+						component: "dropdown",
+						label: "Text to show in bars",
+						ref: "props.showDim",
+						defaultValue: "M",
+						options: [
+							{ value: "M", label: "Measure"},
+							{ value: "D", label: "Dimension"},
+							{ value: "P", label: "Percent"}
+						],
+						show: function(data) { return ~"BA".indexOf(data.props.showTexts) && data.props.normalized; }
+					},
+					showDim2: {
+						type: "string",
+						component: "dropdown",
+						label: "Text to show in bars",
+						ref: "props.showDim",
+						defaultValue: "M",
+						options: [
+							{ value: "M", label: "Measure"},
+							{ value: "D", label: "Dimension"}
+						],
+						show: function(data) { return ~"BA".indexOf(data.props.showTexts) && !data.props.normalized; }
+					},
+					showTot: {
+						type: "string",
+						component: "dropdown",
+						label: "Text to show for total",
+						ref: "props.showTot",
+						defaultValue: "M",
+						options: [
+							{ value: "M", label: "Measure"},
+							{ value: "D", label: "Dimension"}
+						],
+						show: function(data) { return ~"TA".indexOf(data.props.showTexts); }
+					},
+					innerBarPadH: {
+						type: "number",
+						label: "Horizontal inner bar padding (px)",
+						ref: "props.innerBarPadH",
+						defaultValue: 2,
+						expression: "optional",
+						show: function(data) { return data.props.showTexts != "N"; }
+					},
+					innerBarPadV: {
+						type: "number",
+						label: "Vertical inner bar padding (px)",
+						ref: "props.innerBarPadV",
+						defaultValue: 2,
+						expression: "optional",
+						show: function(data) { return data.props.showTexts != "N"; }
+					},
+					textSizeAbs: {
+						type: "boolean",
+						component: "switch",
+						label: "Text size proportional",
+						ref: "props.textSizeAbs",
+						defaultValue: true,
+						options: [
+							{ value: true, label: "Not proportional"},
+							{ value: false, label: "Proportional"}
+						],
+						show: function(data) { return data.props.showTexts != "N" }
+					},
+					textSizeFactor: {
+						type: "number",
+						label: "Text size proportion factor",
+						ref: "props.textSizeFactor",
+						defaultValue: 1,
+						show: function(data) { return data.props.showTexts != "N" 
+							&& !data.props.textSizeAbs; }
+					},
+					textSize: {
+						type: "number",
+						label: "Text size (px)",
+						ref: "props.textSize",
+						defaultValue: 10,
+						expression: "optional",
+						show: function(data) { return data.props.showTexts != "N"
+							&& data.props.textSizeAbs; }
+					},
+					textSizeMax: {
+						type: "number",
+						label: "Max text size (px)",
+						ref: "props.textSize",
+						defaultValue: 18,
+						expression: "optional",
+						show: function(data) { return data.props.showTexts != "N"
+							&& !data.props.textSizeAbs; }
+					},
+					textDots: {
+						type: "boolean",
+						component: "switch",
+						label: "Show text at all if ellipsis",
+						ref: "props.textDots",
+						defaultValue: true,
+						options: [
+							{ value: true, label: "Show"},
+							{ value: false, label: "Don't show"}
+						],
+						show: function(data) { return data.props.showTexts != "N"; }
+					},
+					textColor: {
+						type: "string",
+						component: "dropdown",
+						label: "Text color",
+						ref: "props.textColor",
+						defaultValue: "Auto",
+						options: [
+							{ value: "Auto", label: "Auto"},
+							{ value: "Black", label: "Black"},
+							{ value: "White", label: "White"}
+						],
+						show: function(data) { return data.props.showTexts != "N"; }
+					},
+					vAlign: {
+						type: "string",
+						component: "dropdown",
+						label: "Vertical alignment",
+						ref: "props.vAlign",
+						defaultValue: "C",
+						options: [
+							{ value: "C", label: "Center"},
+							{ value: "T", label: "Top"},
+							{ value: "B", label: "Bottom"}
+						],
+						show: function(data) { return data.props.showTexts != "N"; }
+					},
+					hAlign: {
+						type: "string",
+						component: "dropdown",
+						label: "Horizontal alignment",
+						ref: "props.hAlign",
+						defaultValue: "C",
+						options: [
+							{ value: "C", label: "Center"},
+							{ value: "L", label: "Left"},
+							{ value: "R", label: "Right"}
+						],
+						show: function(data) { return data.props.showTexts != "N"; }
+					},
+					totalFormatM: {
+						type: "string",
+						component: "dropdown",
+						label: "Total format",
+						ref: "props.totalFormatM",
+						defaultValue: "S",
+						options: [
+							{ value: "N", label: "Number"},
+							{ value: "P", label: "Percent"},
+							{ value: "S", label: "SI-notation (K, M, etc.)"},
+							{ value: "C", label: "Custom"}
+						],
+						show: function(data) { return data.props.showTexts != "N"; }
+					},
+					totalFormatMs: {
+						type: "string",
+						label: "Total format string",
+						ref: "props.totalFormatMs",
+						defaultValue: ",.3s",
+						expression: "optional",
+						show: function(data) { return data.props.showTexts != "N"
+							&& data.props.totalFormatM == "C"; }
+					},
+					totalFormatMURL: {
+						type: "string",
+						component: "link",
+						label: "D3 format strings",
+						url: "https://github.com/d3/d3-3.x-api-reference/blob/master/Formatting.md",
+						show: function(data) { return data.props.showTexts != "N"
+							&& data.props.totalFormatM == "C"; }
 					}
 				}
 			},
