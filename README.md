@@ -3,7 +3,7 @@ Add another "dimension" to your dashboard with *transitions*.  Transitions show 
 
 barsPlus is a single extension that allows creating bar charts (horizontal and vertical), stacked bar charts, 100% stacked bar charts, stacked bars showing changes, and area charts.
 
-![alt text](https://github.com/LarryWoodside/barsPlus/blob/master/screenshots/stacked100pctChange.gif "barsPlus 100% bar chart with transitions")
+![alt text](screenshots/stacked100pctChange.gif "barsPlus 100% bar chart with transitions")
 
 ## Updates
 
@@ -33,17 +33,18 @@ V1.1.0  | L. Woodside   | 29-Dec-2016 | Added text on bars |
 
 ## Chart Examples
 
-![alt text](https://github.com/LarryWoodside/barsPlus/blob/master/screenshots/simpleBar.gif "barsPlus simple bar chart")
-![alt text](https://github.com/LarryWoodside/barsPlus/blob/master/screenshots/stackedBar.png "barsPlus stacked bar chart")
-![alt text](https://github.com/LarryWoodside/barsPlus/blob/master/screenshots/stackedBar2.png "barsPlus stacked bar chart")
-![alt text](https://github.com/LarryWoodside/barsPlus/blob/master/screenshots/stackedBarChanges4.gif "barsPlus stacked bar chart with changes")
-![alt text](https://github.com/LarryWoodside/barsPlus/blob/master/screenshots/stackedDesc.gif "barsPlus stacked bars descending order")
-![alt text](https://github.com/LarryWoodside/barsPlus/blob/master/screenshots/stackedBarChanges.png "barsPlus stacked bar chart with changes")
-![alt text](https://github.com/LarryWoodside/barsPlus/blob/master/screenshots/stackedBarChanges2.png "barsPlus stacked bar chart with changes")
-![alt text](https://github.com/LarryWoodside/barsPlus/blob/master/screenshots/simpleBar6.gif "barsPlus minimal simple bars")
-![alt text](https://github.com/LarryWoodside/barsPlus/blob/master/screenshots/area100pctChange.gif "barsPlus area chart")
-![alt text](https://github.com/LarryWoodside/barsPlus/blob/master/screenshots/areaChart.png "barsPlus area chart")
-![alt text](https://github.com/LarryWoodside/barsPlus/blob/master/screenshots/stacked100pctBarChangesTooltip.png "barsPlus 100% with changes")
+![alt text](screenshots/simpleBar.gif "barsPlus simple bar chart")
+![alt text](screenshots/stackedBar.png "barsPlus stacked bar chart")
+![alt text](screenshots/stackedBar2.png "barsPlus stacked bar chart")
+![alt text](screenshots/stackedBarChanges4.gif "barsPlus stacked bar chart with changes")
+![alt text](screenshots/stackedDesc.gif "barsPlus stacked bars descending order")
+![alt text](screenshots/stackedBarChanges.png "barsPlus stacked bar chart with changes")
+![alt text](screenshots/stackedBarChanges2.png "barsPlus stacked bar chart with changes")
+![alt text](screenshots/simpleBar6.gif "barsPlus minimal simple bars")
+![alt text](screenshots/simpleBar7.gif "barsPlus minimal simple bars with text")
+![alt text](screenshots/area100pctChange.gif "barsPlus area chart")
+![alt text](screenshots/areaChart.png "barsPlus area chart")
+![alt text](screenshots/stacked100pctBarChangesTooltip.png "barsPlus 100% with changes")
 
 ## Usage
 
@@ -230,7 +231,7 @@ See the Qlik Sense application **BarsPlus.qvf** in the **app** folder for the ex
 
 A standalone AngularJS application has been created to allow seeing the effect of various parameter changes quickly.  Just double-click on the file **barsPlus-test.html** in the extension folder.  This has test data sets and form elements to change parameters.  The buttons at the top will reduce the data set or resize the control.
 
-![alt text](https://github.com/LarryWoodside/barsPlus/blob/master/screenshots/testProgram.png "barsPlus Test Application")
+![alt text](screenshots/testProgram.png "barsPlus Test Application")
 
 ## Any Issues?
 
