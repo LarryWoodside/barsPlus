@@ -9,7 +9,7 @@ barsPlus is a single extension that allows creating bar charts (horizontal and v
 
 Version | Person        | Date        | Description        |
 --------|---------------|-------------|--------------------|
-V1.0.1  | L. Woodside   | 29-Dec-2016 | Added text on bars |
+V1.1.0  | L. Woodside   | 29-Dec-2016 | Added text on bars |
 
 ## Features
 
@@ -36,7 +36,7 @@ V1.0.1  | L. Woodside   | 29-Dec-2016 | Added text on bars |
 ![alt text](https://github.com/LarryWoodside/barsPlus/blob/master/screenshots/simpleBar.gif "barsPlus simple bar chart")
 ![alt text](https://github.com/LarryWoodside/barsPlus/blob/master/screenshots/stackedBar.png "barsPlus stacked bar chart")
 ![alt text](https://github.com/LarryWoodside/barsPlus/blob/master/screenshots/stackedBar2.png "barsPlus stacked bar chart")
-![alt text](https://github.com/LarryWoodside/barsPlus/blob/master/screenshots/stackedBarChanges4.png "barsPlus stacked bar chart with changes")
+![alt text](https://github.com/LarryWoodside/barsPlus/blob/master/screenshots/stackedBarChanges4.gif "barsPlus stacked bar chart with changes")
 ![alt text](https://github.com/LarryWoodside/barsPlus/blob/master/screenshots/stackedDesc.gif "barsPlus stacked bars descending order")
 ![alt text](https://github.com/LarryWoodside/barsPlus/blob/master/screenshots/stackedBarChanges.png "barsPlus stacked bar chart with changes")
 ![alt text](https://github.com/LarryWoodside/barsPlus/blob/master/screenshots/stackedBarChanges2.png "barsPlus stacked bar chart with changes")
@@ -52,10 +52,10 @@ V1.0.1  | L. Woodside   | 29-Dec-2016 | Added text on bars |
 1.  Drag the extension to a Qlik Sense sheet.
 2.  Add one dimension for a simple bar chart or two dimensions for the other types of charts.  The first dimension is the dimension axis.  The label for the first dimension becomes the dimension axis label.
 3.  Select a single measure.  The label for the measure becomes the measure axis label.
-4.  Make sure the dimension settings in the properties panel have "Show null values" unchecked.
+4.  Make sure the dimension settings in the properties panel have *Show null values* unchecked.
 5.  **Important:** set the sort order, sort by dimensions first, measure last.
     * to create a stacked bar chart which is ordered by the measure value, set the sort order for the primary dimension to be an expression, e.g. =SUM(Measure), ascending or descending.
-6.  Generally you should exclude zero values for the measure using "Add-ons" -> "Data Handling" -> clear "show zero values"
+6.  Generally you should exclude zero values for the measure by clearing the checkbox "Add-ons" -> "Data Handling" -> "show zero values"
 
 ### Quick Start for Various Chart Types
 
@@ -91,14 +91,16 @@ V1.0.1  | L. Woodside   | 29-Dec-2016 | Added text on bars |
 #### Add-ons -> Selection mode
 
 * You can set the selection mode in "Add-ons" -> "Selection mode"
+
   * **Standard**: this is the default Qlik Sense selection mode where you can preview multiple selections.
+  
   * **Quick**: this is similar to QlikView classic selection mode where the selection is immediately applied.
 
 #### Appearance -> Presentation
 
 * **Orientation**: change the bar format: horizontal or vertical
 
-* **100% bar chart**: choose "100% bars" to make the stacked bars all the same height with the segments within each bar representing a portion of the total (like a pie-chart in bar format).  When this is selected, you should also set "Grid height relative to max bar" to 1.
+* **100% bar chart**: choose *100% bars* to make the stacked bars all the same height with the segments within each bar representing a portion of the total (like a pie-chart in bar format).  When this is selected, you should also set *Grid height relative to max bar* to 1.
 
 * **Bars with connectors**: connectors are the skewed blocks that join segments in adjacent bars in a stacked bar chart.  These give an indication of how the segments change.  The connectors also have tooltips to show the numerical value of the change.
 
@@ -114,90 +116,94 @@ V1.0.1  | L. Woodside   | 29-Dec-2016 | Added text on bars |
 
 * **Color scheme**: select one of the predefined color schemes.  Unless an offset is specified (see below), the colors are assigned sequentially starting at the beginning.
 
-  * category10, category20, category20b, category20c: standard D3 color schemes
+  * *category10*, *category20*, *category20b*, *category20c*: standard D3 color schemes
   
-  * google20: bright color scheme
+  * *google20*: bright color scheme
   
-  * custom100: lifted from Qlik Sense theme file
+  * *custom100*: lifted from Qlik Sense theme file
   
-  * qlikView18: QlikView classic colors
+  * *qlikView18*: QlikView classic colors
   
-  * qlikSense12: Qlik Sense default colors
+  * *qlikSense12*: Qlik Sense default colors
 
 * **Start offset in color scheme**.  In order to specify a different starting color in the color scheme, enter a number here from 0 to (number of colors) - 1.  The number of colors in a color scheme is shown in the name of the color scheme, e.g. category10 has 10 colors so the offset can be from 0 to 9.  Note that when necessary the colors are reused in a revolving fashion.
 
 * **Show legend** indicates whether a legend is to be shown.
 
-* **Legend position** specifies the position of the legend: Right, Left, Top, or Bottom.
+* **Legend position** specifies the position of the legend: *Right*, *Left*, *Top*, or *Bottom*.
 
-* **Legend size** allows you to adjust the size (width for right/left legends or height for top/bottom legends).  Choose narrow, medium or wide.
+* **Legend size** allows you to adjust the size (width for right/left legends or height for top/bottom legends).  Choose *Narrow*, *Medium* or *Wide*.
 
-* **Legend spacing** is only applicable to top or bottom legends and it controls spacing between the individual legend items.
+* **Legend spacing** is only applicable to top or bottom legends and it controls spacing between the individual legend items.  Choose *Narrow*, *Medium* or *Wide*.
 
 #### Appearance -> X-Axis
 
 *Note that the x-axis may be either the dimension or the measure axis, depending on the chart orientation.  Information here describes the dimension axis*
 
-* **Labels and title** whether to show "Labels and title", "Labels only", "Title only", or "None".  Title is the single name for an axis appearing in the center.  Labels are the ticks, numbers/descriptions, gridlines.
+* **Labels and title** whether to show *Labels and title*, *Labels only*, *Title only*, or *None*.  Title is the single name for an axis appearing in the center.  Labels are the ticks, numbers/descriptions, gridlines.
 
-* **Label Style:** "Auto", "Horizontal", "Staggered", "Tilted".  Auto means a horizontal label will be used unless there is not enough space, in which case the labels will be tilted 45 degrees.
+* **Label Style:** *Auto*, *Horizontal*, *Staggered*, *Tilted*.  Auto means a horizontal label will be used unless there is not enough space, in which case the labels will be tilted 45 degrees.
 
 * **Gridlines** controls whether gridlines can span the length or height of the chart.  Gridlines cannot be shown when labels have been suppressed.
 
-* **Dimension margin size** refers to the width/height of the labels and axis excluding the axis title.  Select Narrow, Medium or Wide.
+* **Dimension margin size** refers to the width/height of the labels and axis excluding the axis title.  Select *Narrow*, *Medium* or *Wide*.
 
 #### Appearance -> Y-Axis
 
 *Note that the y-axis may be either the dimension or the measure axis, depending on the chart orientation.  Information here describes the measure axis*
 
-* **Labels and title** whether to show "Labels and title", "Labels only", "Title only", or "None".  Title is the single name for an axis appearing in the center.  Labels are the ticks, numbers/descriptions, gridlines.
+* **Labels and title** whether to show *Labels and title*, *Labels only*, *Title only*, or *None*.  Title is the single name for an axis appearing in the center.  Labels are the ticks, numbers/descriptions, gridlines.
 
-* **Label Style:**: "Auto", "Horizontal", "Staggered", "Tilted".  Auto means a horizontal label will be used unless there is not enough space, in which case the labels will be tilted 45 degrees.
+* **Label Style:**: *Auto*, *Horizontal*, *Staggered*, *Tilted*.  Auto means a horizontal label will be used unless there is not enough space, in which case the labels will be tilted 45 degrees.
 
 * **Gridlines** controls whether gridlines can span the length or height of the chart.  Gridlines cannot be shown when labels have been suppressed.
 
-* **Measure margin size** refers to the width/height of the labels and axis excluding the axis title.  Select Narrow, Medium or Wide.
+* **Measure margin size** refers to the width/height of the labels and axis excluding the axis title.  Select *Narrow*, *Medium* or *Wide*.
 
-* **Measure tick spacing** controls the number of ticks that appear on the axis.  Wide has few ticks while Narrow has more.
+* **Measure tick spacing** controls the number of ticks that appear on the axis.  Wide has few ticks while Narrow has more.  Choose *Wide*, *Medium*, or *Narrow*.
 
-* **Measure axis number format**: since it's not clear how to format numbers using Qlik Sense format strings from an extension, the native D3 number formatting is used on the measure axis. Choose the basic format from the dropdown or specify "Custom" to enter a D3 format string.  Format strings are described here: 
+* **Measure axis number format**: since it's not clear how to format numbers using Qlik Sense format strings from an extension, the native D3 number formatting is used on the measure axis. Choose the basic format from the dropdown or specify *Custom* to enter a D3 format string.  Format strings are described here: 
 *[D3 Format Description](https://github.com/d3/d3-3.x-api-reference/blob/master/Formatting.md "D3 format strings")*
 
 #### Appearance -> Text on Bars
 
 * **Text on bars**
 
-  * "None" for no text on bars
+  * *None* for no text on bars
   
-  * "Inside bars" to display text in each segment that makes up a stacked bar,
+  * *Inside bars* to display text in each segment that makes up a stacked bar,
   
-  * "Total" to display text on top of each vertical bar or to the right of each horizontal bar,
+  * *Total* to display text on top of each vertical bar or to the right of each horizontal bar,
   
-  * "Both" to display both the text inside the bars and the total text
+  * *Both* to display both the text inside the bars and the total text
 
-* **Text to show in bars**: choose whether to show the "Measure" number, the "Dimension" text, or in the case of 100% bars "Percent"
+* **Text to show in bars**: choose whether to show the *Measure* number, the *Dimension* text, or in the case of 100% bars *Percent*
 
-* **Text to show for total** allows either the total number to be displayed or the dimension text (allowing the dimension axis labels to be removed).
+* **Text to show for total** allows either the total number to be displayed (*Measure*) or the *Dimension* text (allowing the dimension axis labels to be removed).
 
-* **Horizontal inner bar padding (px)** updates the amount of space to the left and right of text inside a bar.
+* **Horizontal inner bar padding (px)** sets the amount of space to the left and right of text inside a bar.
 
-* **Vertical inner bar padding (px)** changes the amount of space above or below text inside a bar.
+* **Vertical inner bar padding (px)** specifies the amount of space above or below text inside a bar.
 
 * **Text size proportional**: select this to have the text change in size when the chart is resized.  This requires adjustment of the text size proportion factor.
 
-* **Text size proportion factor** is the size of the text relative to the width of bars (for vertical bars) or the height of the bars (for horizontal bars).  For horizontal bars this is set to 1 to make very large text, for vertical bars the factor is usually much less.  Some experimentation is needed to get the correct factor.
+* **Text size proportion factor** is the size of the text relative to the width of bars (for vertical bars) or the height of the bars (for horizontal bars).  For horizontal bars this is set to 1 to make very large text, for vertical bars the factor is usually much less.  Some experimentation is needed to get the correct factor.  This parameter is shown only when *Text size proportional* is *Proportional*.
+
+* **Max text size (px)** can be set when the text size is proportional to bar size.  This sets a limit on how big the text can be.  This parameter is shown only when *Text size proportional* is *Proportional*.
+
+* **Text size (px)** sets the size of the text in pixels.  This parameter is shown only when *Text size proportional* is *Not proportional*.
 
 * **Show text at all if ellipsis**: text that is too long to fit in the space provided is shortened and an ellipsis "..." is added to indicate not all the text is displayed.  For numbers this can cause invalid information to be displayed so it is better not to show any text at all if the ellipsis is present.
 
-* **Text color** "Auto" will cause the color to change depending on the bar color in order to increase the contrast, but this can be overridden to be either always black or always white.
+* **Text color** *Auto* will cause the color to change depending on the bar color in order to increase the contrast, but this can be overridden to make the text always black or always white.
 
-* **Vertical alignment** allows the text to be aligned vertically within a bar segment, choose "Top", "Bottom" or "Center".
+* **Vertical alignment** allows the text to be aligned vertically within a bar segment, choose *Top*, *Bottom* or *Center*.
 
-* **Horizontal alignment** changes how the text is aligned horizontally within a bar segment, choose "Left", "Right" or "Center".
+* **Horizontal alignment** changes how the text is aligned horizontally within a bar segment, choose *Left*, *Right* or *Center*.
 
-* **Total format**: here you can specify how numbers are to be formatted for bar totals.  Choose a predefined format or choose "Custom" to specify a format string.
+* **Total format**: here you can specify how numbers are to be formatted for bar totals.  Choose a predefined format or choose *Custom* to specify a format string.
 
-* **Total format string** is the D3.format string.  Format strings are described here: 
+* **Total format string** is the D3.format string when *Total format* is *Custom*.  Format strings are described here: 
 *[D3 Format Description](https://github.com/d3/d3-3.x-api-reference/blob/master/Formatting.md "D3 format strings")*
 
 #### Appearance -> Transitions
@@ -208,9 +214,9 @@ V1.0.1  | L. Woodside   | 29-Dec-2016 | Added text on bars |
 
 * **Transition duration** refers to how long the transition takes to complete.  Specify the number of milliseconds (1000 = 1 second).
 
-* **Transition style**: you may change the way transitions appear using one of the standard D3 transition styles, for example, "linear" means there is a uniform speed throughout the transition while "exponential" means the transition is very slow at first and then very fast.
+* **Transition style**: you may change the way transitions appear using one of the standard D3 transition styles, for example, *linear* means there is a uniform speed throughout the transition while *exponential* means the transition is very slow at first and then very fast.
 
-Need I say that the "bounce" style should not be used in production applications? :smile:
+Need I say that the *bounce* style should not be used in production applications? :smile:
 
 ## Changing Defaults
 
