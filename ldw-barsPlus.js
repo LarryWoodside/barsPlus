@@ -8,6 +8,7 @@
 	Version		Person			Date			Description
 	V1.0.0		L. Woodside		19-Dec-2016		Initial Release
 	V1.1.0		L. Woodside		29-Dec-2016		Added text on bars
+	V1.2.0		L. Woodside		07-Jan-2017		Allow multiple measures
 
  Dependencies: d3.v3.js
 
@@ -82,6 +83,12 @@
  transitionDuration	Duration of transition
  ease				Transition style
 
+ Multiple measures
+
+ defDims			Defined number of dimensions
+ defMeas			Defined number of measures
+ measures			Array of measure names
+
  UI-determined Properties
  
  id					Unique id of enclosing element
@@ -109,16 +116,48 @@ var ldwbarsPlus = {
  *			g.deltas
 */
 initData: function() {
-
+	/*
+	To support multiple measures, take the input raw data and transform it
+	to look like previously supported formats:
+	0 Dimensions, 1 or more measures -> format as 1 dimension, 1 measure
+	1 Dimension, 2 or more measures -> format as 2 dimensions, 1 measure
+	If two dimensions and multiple measures specified, ignore all but the first measure
+	*/
 	var g = this;
-	var struc = [], flatData = [], q = [], deltas = [];
+	var struc = [], flatData = [], q = [], deltas = [], inData = [];
 
 	if (!g.rawData[0]) return; // sometimes undefined
+	if (g.defDims + g.defMeas != g.rawData[0].length) return;  // sometimes mismatched
+
+	if (g.defDims == 0) {
+		for (var i = 0; i < g.rawData.length; i++) {
+			for (var j = 0; j < g.measures.length; j++) {
+				inData.push([
+					{qElemNumber: -1, qNum: j+1, qText: g.measures[j]},
+					g.rawData[i][j]
+				]);
+			}
+		}		
+	}
+	else if (g.defDims == 1 && g.defMeas > 1) {
+		for (var i = 0; i < g.rawData.length; i++) {
+			for (var j = 0; j < g.measures.length; j++) {
+				inData.push([
+					g.rawData[i][0],
+					{qElemNumber: -1, qNum: j+1, qText: g.measures[j]},
+					g.rawData[i][j+1]
+				]);
+			}
+		}
+	}
+	else {
+		inData = g.rawData;  // Process as in previous version
+	}
 	// Process one dimension data
-	if (g.rawData[0].length == 2) {
+	if (inData[0].length == 2) {
 		g.nDims = 1;
 		g.normalized = false;
-		g.rawData.forEach(function(d) {
+		inData.forEach(function(d) {
 			struc.push({dim1: d[0].qText, offset: d[1].qNum});
 			flatData.push({
 					dim1: d[0].qText, 
@@ -142,7 +181,7 @@ initData: function() {
 	g.nDims = 2;
 
 	var p1 = "", p2, edges = [], b, p = [];
-	g.rawData.forEach(function(d) {
+	inData.forEach(function(d) {
 		var c2 = d[1].qText;
 		if (p.indexOf(d[0].qText) == -1) {
 			p.push(d[0].qText);
@@ -181,7 +220,7 @@ initData: function() {
 	var n = d3.nest()
 		.key(function(d) {return d[0].qText})
 		.key(function(d) {return d[1].qText})
-		.entries(g.rawData)
+		.entries(inData)
 		;
 	// sort all nodes in order specified by q
 	n.forEach(function(d) {
@@ -543,19 +582,25 @@ createBars: function() {
 		.style("opacity","0")
 		.attr("class","selectable ldwbar")
 		.on("click",function(d) {
-			if (g.selectionMode == "QUICK") {
-				g.self.backendApi.selectValues(0,[d.qElemNumber],true);
-			}
-			else if (g.selectionMode == "CONFIRM") {
-				var t = d3.select(this).classed("selected");
-				g.self.selectValues(0,[d.qElemNumber],true);
-				var x = d3.selectAll("#" + g.id + " [ldwdim1='" + d.qElemNumber + "']")
-						.classed("selected",!t);
-			d3.select("#" + g.id + " .ldwtooltip")
-				.style("opacity","0")
-				.transition()
-				.remove
-				;
+			if (d.qElemNumber >= 0) { // Cannot select a measure
+				if (g.selectionMode == "QUICK") {
+					g.self.backendApi.selectValues(0,[d.qElemNumber],true);
+				}
+				else if (g.selectionMode == "CONFIRM") {
+					var t = d3.select(this).classed("selected");
+					g.self.selectValues(0,[d.qElemNumber],true);
+					// following to address QS bug where clear button does not clear class names
+					g.self.clearSelectedValues = function() { 
+						d3.selectAll("#" + g.id +" .selected").classed("selected",false);
+					};
+					var x = d3.selectAll("#" + g.id + " [ldwdim1='" + d.qElemNumber + "']")
+							.classed("selected",!t);
+				d3.select("#" + g.id + " .ldwtooltip")
+					.style("opacity","0")
+					.transition()
+					.remove
+					;
+				}
 			}
 			return; 
 		})

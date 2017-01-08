@@ -10,6 +10,7 @@
  *	Version		Person			Date			Description
  *	V1.0.0		L. Woodside		19-Dec-2016		Initial Release
  *	V1.1.0		L. Woodside		29-Dec-2016		Added text on bars
+ *  V1.2.0		L. Woodside		07-Jan-2017		Allow multiple measures
  *
 */
 define( [
@@ -43,8 +44,25 @@ function ($, qvangular, ldwBarsPlus) {
 						g.editMode = false;
 						g.selectionMode = l.selectionMode;
 						
-						g.axisTitleD = l.qHyperCube.qDimensionInfo[0].qFallbackTitle;
-						g.axisTitleM = l.qHyperCube.qMeasureInfo[0].qFallbackTitle;
+						// number of defined dimensions and measures
+						g.defDims = l.qHyperCube.qDimensionInfo.length;
+						g.defMeas = l.qHyperCube.qMeasureInfo.length;
+
+						if (g.defDims == 0)
+							g.axisTitleD = p.axisTitleD;
+						else
+							g.axisTitleD = l.qHyperCube.qDimensionInfo[0].qFallbackTitle;
+						
+						if (g.defDims == 0 || (g.defDims == 1 && g.defMeas > 1)) {
+							g.measures = [];
+							for (var i = 0; i < g.defMeas; i++) {
+								var t = l.qHyperCube.qMeasureInfo[i].qFallbackTitle;
+								g.measures.push(t.startsWith("=") ? t.slice(1) : t);
+							}
+							g.axisTitleM = p.axisTitleM;
+						}
+						else
+							g.axisTitleM = l.qHyperCube.qMeasureInfo[0].qFallbackTitle;
 
 						// Presentation				
 						g.orientation = p.orientation;
@@ -144,17 +162,17 @@ function ($, qvangular, ldwBarsPlus) {
 					// to partially address QS bug where clear selections button does not reset element classes
 					// this does not completely work if there were existing selections on field prior to entering
 					// selection mode
-					$scope.$watch(
-						function() {
-								return $scope.layout.qHyperCube.qDimensionInfo[0].qStateCounts.qSelected;
-						}
-						,function(newValue, oldValue) {
-
-							if (newValue != oldValue && newValue == 0) {
-								d3.selectAll(".selected").classed("selected",false);
-							}
-						}
-					);
+//					$scope.$watch(
+//						function() {
+//								return $scope.layout.qHyperCube.qDimensionInfo[0].qStateCounts.qSelected;
+//						}
+//						,function(newValue, oldValue) {
+//
+//							if (newValue != oldValue && newValue == 0) {
+//								d3.selectAll(".selected").classed("selected",false);
+//							}
+//						}
+//					);
 					// watch for when selection mode enabled
 					$scope.$watch(
 						function() {

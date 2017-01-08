@@ -11,19 +11,20 @@
  *	Version		Person			Date			Description
  *	V1.0.0		L. Woodside		19-Dec-2016		Initial Release
  *  V1.1.0		L. Woodside		29-Dec-2016		Added text on bars
+ *  V1.2.0		L. Woodside		07-Jan-2017		Allow multiple measures
  *
 */
 function () {
 	'use strict';
 	var dimensions = {
 		uses: "dimensions",
-		min: 1,
+		min: 0,
 		max: 2
 	};
 	var measures = {
 		uses: "measures",
 		min: 1,
-		max: 1
+		max: 10
 	};
 	var sorting = {
 		uses: "sorting"
@@ -76,7 +77,12 @@ function () {
 							{ value: false, label: "Not 100%"},
 							{ value: true, label: "100% bars"}
 						],
-						show: function(data) { return (data.qHyperCubeDef.qDimensions.length > 1); }
+						show: function(data) { 
+							return data.qHyperCubeDef.qDimensions.length > 1
+								|| (data.qHyperCubeDef.qDimensions.length == 1 
+										&& data.qHyperCubeDef.qMeasures.length > 1
+									); 
+						}
 					},
 					showDeltas: {
 						type: "boolean",
@@ -88,7 +94,12 @@ function () {
 							{ value: false, label: "Standard bars"},
 							{ value: true, label: "Bars with connectors"}
 						],
-						show: function(data) { return (data.qHyperCubeDef.qDimensions.length > 1); }
+						show: function(data) { 
+							return data.qHyperCubeDef.qDimensions.length > 1
+								|| (data.qHyperCubeDef.qDimensions.length == 1 
+										&& data.qHyperCubeDef.qMeasures.length > 1
+									); 
+						}
 					},
 					barSpacing: {
 						type: "number",
@@ -139,18 +150,6 @@ function () {
 						max: 2.001,
 						step: 0.1
 					},
-// Future enhancement
-//					valueLabels: {
-//						type: "boolean",
-//						component: "switch",
-//						label: "Value labels",
-//						ref: "props.valueLabels",
-//						defaultValue: false,
-//						options: [
-//							{ value: true, label: "Labels on bars"},
-//							{ value: false, label: "No labels"}
-//						]
-//					},
 					backgroundColor: {
 						type: "string",
 						label: "Background color",
@@ -198,7 +197,12 @@ function () {
 							{ value: true, label: "Single Color"},
 							{ value: false, label: "Multi-color"}
 						],
-						show: function(data) { return (data.qHyperCubeDef.qDimensions.length == 1); }
+						show: function(data) { 
+							return data.qHyperCubeDef.qDimensions.length == 0 
+								|| (data.qHyperCubeDef.qDimensions.length == 1 
+										&& data.qHyperCubeDef.qMeasures.length == 1
+									); 
+						}
 					},
 					showLegend: {
 						type: "boolean",
@@ -210,7 +214,12 @@ function () {
 							{ value: false, label: "No legend"},
 							{ value: true, label: "Show legend"}
 						],
-						show: function(data) { return (data.qHyperCubeDef.qDimensions.length > 1); }
+						show: function(data) { 
+							return data.qHyperCubeDef.qDimensions.length > 1
+								|| (data.qHyperCubeDef.qDimensions.length == 1 
+										&& data.qHyperCubeDef.qMeasures.length > 1
+									); 
+						}
 					},
 					legendPosition: {
 						type: "string",
@@ -224,10 +233,12 @@ function () {
 							{ value: "T", label: "Top"},
 							{ value: "B", label: "Bottom"}
 						],
-						show: function( data ){ 
-							return data.props.showLegend
-								&& (data.qHyperCubeDef.qDimensions.length > 1); 
-							}
+						show: function(data) { 
+							return data.qHyperCubeDef.qDimensions.length > 1
+								|| (data.qHyperCubeDef.qDimensions.length == 1 
+										&& data.qHyperCubeDef.qMeasures.length > 1
+									); 
+						}
 					},
 					legendSize: {
 						type: "string",
@@ -240,10 +251,12 @@ function () {
 							{ value: "M", label: "Medium"},
 							{ value: "W", label: "Wide"}
 						],
-						show: function( data ){ 
-							return data.props.showLegend
-								&& (data.qHyperCubeDef.qDimensions.length > 1); 
-							}
+						show: function(data) { 
+							return data.qHyperCubeDef.qDimensions.length > 1
+								|| (data.qHyperCubeDef.qDimensions.length == 1 
+										&& data.qHyperCubeDef.qMeasures.length > 1
+									); 
+						}
 					},
 					legendSpacing: {
 						type: "string",
@@ -256,11 +269,13 @@ function () {
 							{ value: "M", label: "Medium"},
 							{ value: "W", label: "Wide"}
 						],
-						show: function( data ){ 
-							return data.props.showLegend
-								&& (data.qHyperCubeDef.qDimensions.length > 1)
-								&& (data.props.legendPosition == "T" || data.props.legendPosition == "B"); 
-							}
+						show: function(data) { 
+							return (data.qHyperCubeDef.qDimensions.length > 1
+								|| (data.qHyperCubeDef.qDimensions.length == 1 
+										&& data.qHyperCubeDef.qMeasures.length > 1
+									)
+								) && (data.props.legendPosition == "T" || data.props.legendPosition == "B")
+						}
 					}
 				}
 			},
@@ -268,7 +283,11 @@ function () {
 				type: "items",
 				label: function(data) {
 					var t = "";
-					if (data.qHyperCubeDef.qDimensions.length > 0) {
+					if (data.qHyperCubeDef.qDimensions.length == 0) {
+						if (data.props.axisTitleD.length > 0)
+							t = " (" + data.props.axisTitleD + ")"
+					}
+					else {
 						t = data.qHyperCubeDef.qDimensions[0].qDef.qFieldLabels[0];
 						if (t.length == 0) {
 							t = data.qHyperCubeDef.qDimensions[0].qDef.qFieldDefs[0];
@@ -290,6 +309,17 @@ function () {
 							{ value: "T", label: "Titles only"},
 							{ value: "N", label: "None"}
 						]
+					},
+					axisTitleD: {
+						type: "string",
+						label: "Dimension axis title",
+						ref: "props.axisTitleD",
+						defaultValue: "Dimension axis",
+						expression: "optional",
+						show: function(data) { 
+							return data.qHyperCubeDef.qDimensions.length == 0 
+								&& (data.props.labelTitleD == 'B' || data.props.labelTitleD == 'T');
+						}
 					},
 					LabelStyleD: {
 						type: "string",
@@ -345,7 +375,11 @@ function () {
 				type: "items",
 				label: function(data) {
 					var t = "";
-					if (data.qHyperCubeDef.qMeasures.length > 0) {
+					if (data.qHyperCubeDef.qDimensions.length == 0 || data.qHyperCubeDef.qMeasures.length > 1) {
+						if (data.props.axisTitleM.length > 0)
+							t = " (" + data.props.axisTitleM + ")"
+					}
+					else if (data.qHyperCubeDef.qMeasures.length > 0) {
 						if (data.qHyperCubeDef.qMeasures[0].qDef.hasOwnProperty("qLabel")) {
 							t = data.qHyperCubeDef.qMeasures[0].qDef.qLabel;
 						}
@@ -369,6 +403,23 @@ function () {
 							{ value: "T", label: "Titles only"},
 							{ value: "N", label: "None"}
 						]
+					},
+					axisTitleM: {
+						type: "string",
+						label: "Measure axis title",
+						ref: "props.axisTitleM",
+						defaultValue: "Measure axis",
+						expression: "optional",
+						show: function(data) { 
+							return (
+								data.qHyperCubeDef.qDimensions.length == 0
+									|| (
+										data.qHyperCubeDef.qDimensions.length == 1
+										&& data.qHyperCubeDef.qMeasures.length > 1
+									)
+								)
+								&& (data.props.labelTitleM == 'B' || data.props.labelTitleM == 'T');
+						}
 					},
 					LabelStyleM: {
 						type: "string",

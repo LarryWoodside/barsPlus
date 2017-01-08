@@ -7,13 +7,19 @@ barsPlus is a single extension that allows creating bar charts (horizontal and v
 
 ## Updates
 
-Version | Person        | Date        | Description        |
---------|---------------|-------------|--------------------|
-V1.1.0  | L. Woodside   | 29-Dec-2016 | Added text on bars |
+| Version | Person        | Date        | Description        |
+| ------- | ------------- | ----------- | ------------------ |
+| V1.1.0  | L. Woodside   | 29-Dec-2016 | Added text on bars |
+| V1.2.0  | L. Woodside   | 07-Jan-2017 | Support for multiple measures |
 
 ## Features
 
-* regular and stacked bar charts (1 or 2 dimensions)
+* regular and stacked bar charts
+
+  * Regular bar chart: zero dimensions and multiple measures, or one dimension and one measure.
+  
+  * Stacked bar chart: one dimension and multiple measures, or two dimensions and one measure.
+  
 * stacked bars can be normalized (100% bars for percent contribution)
 * horizontal or vertical bars
 * area charts (standard or 100%)
@@ -51,36 +57,36 @@ V1.1.0  | L. Woodside   | 29-Dec-2016 | Added text on bars |
 ### Basic chart with defaults
 
 1.  Drag the extension to a Qlik Sense sheet.
-2.  Add one dimension for a simple bar chart or two dimensions for the other types of charts.  The first dimension is the dimension axis.  The label for the first dimension becomes the dimension axis label.
-3.  Select a single measure.  The label for the measure becomes the measure axis label.
+2.  Usually add one dimension and one measure for a simple bar chart or two dimensions and one measure for stacked bar charts. The label for the first dimension becomes the dimension axis title and the label for the measure becomes the measure axis title.
+3.  You may also omit the dimension and add just measures for a simple bar chart, each measure is associated with one bar.  The titles for both axes must be specified since they can't be inferred from the selections.  Alternately you can specify a single dimension and multiple measures for a stacked bar chart.  This requires specifying the measure axis title.
 4.  Make sure the dimension settings in the properties panel have *Show null values* unchecked.
-5.  **Important:** set the sort order, sort by dimensions first, measure last.
+5.  **Important:** set the sort order, sort by dimensions first, measures last.
     * to create a stacked bar chart which is ordered by the measure value, set the sort order for the primary dimension to be an expression, e.g. =SUM(Measure), ascending or descending.
 6.  Generally you should exclude zero values for the measure by clearing the checkbox "Add-ons" -> "Data Handling" -> "show zero values"
 
 ### Quick Start for Various Chart Types
 
-**Simple bar** - one dimension, one measure
+**Simple bar** - one dimension and one measure, or zero dimensions and multiple measures
 
-**Stacked bar** - two dimensions, one measure, axis dimension comes first, sort dimensions first
+**Stacked bar** - one dimension and multiple measures, or two dimensions and one measure - axis dimension comes first, sort dimensions first
 
-**100% stacked bar** - two dimensions, one measure, axis dimension comes first, sort dimensions first
+**100% stacked bar** - one dimension and multiple measures, or two dimensions and one measure - axis dimension comes first, sort dimensions first
 * Appearance -> Presentation -> 100% Bars = on
 * Appearance -> Presentation -> Grid height relative to max bar = 1
 
-**100% stacked bar showing connectors** - two dimensions, one measure, axis dimension comes first, sort dimensions first
+**100% stacked bar showing connectors** - one dimension and multiple measures, or two dimensions and one measure - axis dimension comes first, sort dimensions first
 * Appearance -> Presentation -> 100% Bars = on
 * Appearance -> Presentation -> Bars with connectors = on
 * Appearance -> Presentation -> Grid height relative to max bar = 1
 * Appearance -> Presentation -> Bar spacing = 0.5
 * Appearance -> Presentation -> Outer Bar spacing = 0
 
-**Area chart** - two dimensions, one measure, axis dimension comes first, sort dimensions first
+**Area chart** - one dimension and multiple measures, or two dimensions and one measure - axis dimension comes first, sort dimensions first
 * Appearance -> Presentation -> Bars with connectors = on
 * Appearance -> Presentation -> Bar spacing = 1
 * Appearance -> Presentation -> Outer Bar spacing = 0
 
-**100% Area chart** - two dimensions, one measure, axis dimension comes first, sort dimensions first
+**100% Area chart** - one dimension and multiple measures, or two dimensions and one measure - axis dimension comes first, sort dimensions first
 * Appearance -> Presentation -> 100% Bars = on
 * Appearance -> Presentation -> Bars with connectors = on
 * Appearance -> Presentation -> Bar spacing = 1
@@ -143,6 +149,8 @@ V1.1.0  | L. Woodside   | 29-Dec-2016 | Added text on bars |
 
 * **Labels and title** whether to show *Labels and title*, *Labels only*, *Title only*, or *None*.  Title is the single name for an axis appearing in the center.  Labels are the ticks, numbers/descriptions, gridlines.
 
+* **Dimension axis title**: the dimension axis title is usually taken from the label of the first dimension defined, so this field is hidden.  If there are no dimensions and multiple measures, you can enter the title for the axis here.
+
 * **Label Style:** *Auto*, *Horizontal*, *Staggered*, *Tilted*.  Auto means a horizontal label will be used unless there is not enough space, in which case the labels will be tilted 45 degrees.
 
 * **Gridlines** controls whether gridlines can span the length or height of the chart.  Gridlines cannot be shown when labels have been suppressed.
@@ -154,6 +162,8 @@ V1.1.0  | L. Woodside   | 29-Dec-2016 | Added text on bars |
 *Note that the y-axis may be either the dimension or the measure axis, depending on the chart orientation.  Information here describes the measure axis*
 
 * **Labels and title** whether to show *Labels and title*, *Labels only*, *Title only*, or *None*.  Title is the single name for an axis appearing in the center.  Labels are the ticks, numbers/descriptions, gridlines.
+
+* **Measure axis title**: if only one measure is specified, the measure axis title is taken from the label of the measure.  If multiple measures are defined, you can enter the title for the axis here.
 
 * **Label Style:**: *Auto*, *Horizontal*, *Staggered*, *Tilted*.  Auto means a horizontal label will be used unless there is not enough space, in which case the labels will be tilted 45 degrees.
 
@@ -240,5 +250,4 @@ Please let me know about any bugs and I will try to fix them.  I will also be co
 ## Known Limitations
 
 * no lasso in standard selections
-* it should be possible to create stacked bar charts using one dimension and multiple measures, but this is not yet supported
-* there's a QS bug with the clear selections button for standard selections.  Attempted a workaround, but the fix does not work if there were existing selections on the field.  Investigating this issue.
+
