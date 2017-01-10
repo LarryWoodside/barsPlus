@@ -12,6 +12,7 @@
 		Version		Person			Date			Description
 		V1.0.0		L. Woodside		19-Dec-2016		Initial Release
 		V1.1.0		L. Woodside		29-Dec-2016		Added text on bars
+		V1.2.0		L. Woodside		07-Jan-2017		Support for multiple measures
 	-->
 	<meta charset="utf-8">
     <title>Bars Plus Test Application</title>
@@ -39,6 +40,11 @@
 						g.height = element.parent().height();
 						g.inSelections = false;
 						g.editMode = false;
+
+						// number of defined dimensions and measures
+						g.defDims = 2;
+						g.defMeas = 1;
+						g.measures = [];
 
 						g.axisTitleD = attrs["axisTitleD"];
 						g.axisTitleM = attrs["axisTitleM"];
@@ -99,8 +105,15 @@
 						scope.$watch(function() { return scope.data; }, function(newValue, oldValue) {
 							if(newValue != oldValue) {
 								g.rawData = newValue;
-								g.initData();
-								g.updateBars();
+								if (g.rawData[0].length - 1 != g.defDims) {
+									g.defDims = g.rawData[0].length - 1;
+									g.initData();
+									g.refreshChart();
+								}
+								else {
+									g.initData();
+									g.updateBars();
+								}
 							}
 						});
 						scope.$watch(
@@ -287,7 +300,8 @@ $scope.oneDim2 = [
 				$scope.g = Object.create(ldwbarsPlus);
 				$scope.id = "myId";
 				$scope.setData = function(i) {
-					if (i == 1) {
+					$scope.g.normalized = "";
+					if (i == 1) { // full-data
 						if ($scope.g.nDims == 1) {
 							$scope.data = $scope.oneDim1;
 						}
@@ -295,7 +309,7 @@ $scope.oneDim2 = [
 							$scope.data = $scope.data1;
 						}
 					}
-					else {
+					else { // reduced-data
 						if ($scope.g.nDims == 1) {
 							$scope.data = $scope.oneDim2;
 						}
@@ -606,7 +620,7 @@ label, input, select {
 				axis-format-m="C"
 				axis-format-ms=",.3s"
 
-                show-texts="N"
+                show-texts="B"
                 show-dim="M"
                 show-tot="M"
                 inner-bar-pad-h="4"
