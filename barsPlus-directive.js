@@ -11,6 +11,7 @@
  *	V1.0.0		L. Woodside		19-Dec-2016		Initial Release
  *	V1.1.0		L. Woodside		29-Dec-2016		Added text on bars
  *  V1.2.0		L. Woodside		07-Jan-2017		Allow multiple measures
+ *  V1.3.0		L. Woodside		15-Jan-2017		Improved color options
  *
 */
 define( [
@@ -72,10 +73,12 @@ function ($, qvangular, ldwBarsPlus) {
 						g.outerGap = p.outerGap
 						g.gridHeight = p.gridHeight;
 						g.backgroundColor = p.backgroundColor;
-						g.colorScheme = p.colorScheme;
-						g.colorOffset = p.colorOffset;
 						
 						// Colors and Legend
+						g.colorSource = p.colorSource;
+						g.colorAttr = p.colorAttr;
+						g.colorScheme = p.colorScheme;
+						g.colorOffset = p.colorOffset;
 						g.singleColor = p.singleColor;
 						g.showLegend = p.showLegend;
 						g.legendPosition = p.legendPosition;
