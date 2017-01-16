@@ -11,6 +11,7 @@ barsPlus is a single extension that allows creating bar charts (horizontal and v
 | ------- | ------------- | ----------- | ------------------ |
 | V1.1.0  | L. Woodside   | 29-Dec-2016 | Added text on bars |
 | V1.2.0  | L. Woodside   | 07-Jan-2017 | Support for multiple measures |
+| V1.3.0  | L. Woodside   | 07-Jan-2017 | Improved color options |
 
 ## Features
 
@@ -31,6 +32,7 @@ barsPlus is a single extension that allows creating bar charts (horizontal and v
 * multiple options available for fine tuning appearance
 * text inside bars: number, dimension text, or percentage (100% bars)
 * bar total lables: number, dimension text
+* fully flexible colors, expressions can be used to determine colors to support persistent colors
 
 ## Installation
 
@@ -120,6 +122,12 @@ barsPlus is a single extension that allows creating bar charts (horizontal and v
 * **Background color** you can set the background color for the grid by entering a single color.  This can be a javascript color name: (white, gray, azure), a hex code (e.g. #d0d0d0, #f8f8f8), or rgb specifier: rgb(230,250,250).
 
 #### Appearance -> Colors and Legend
+
+* **Color source**: can be either *assigned* or *calculated*.  Assigned colors are taken sequentially from a color scheme.  Calculated colors allow a Qlik Sense formula to be used to return either the offset of a color in the color scheme, or a color value.  
+See the description *Assigning Colors* below.
+
+* **Color attribute**: if the color source is *calculated*, you may specify what the formula returns -- an offset into the color scheme or a color value.
+See the description *Assigning Colors* below.
 
 * **Color scheme**: select one of the predefined color schemes.  Unless an offset is specified (see below), the colors are assigned sequentially starting at the beginning.
 
@@ -228,6 +236,98 @@ barsPlus is a single extension that allows creating bar charts (horizontal and v
 * **Transition style**: you may change the way transitions appear using one of the standard D3 transition styles, for example, *linear* means there is a uniform speed throughout the transition while *exponential* means the transition is very slow at first and then very fast.
 
 Need I say that the *bounce* style should not be used in production applications? :smile:
+
+## Assigning Colors
+
+There are two ways to assign colors to bars or bar segments.  
+You may let the colors be assigned automatically by selecting "Color Source" = *Assigned*, or you can specify "Color Source" = *Calculated* to use a formula to determine the color.
+Please see the sheet "Colors Enhancement" in the Qlik Sense application BarsPlus.qvf in the app subfolder.
+
+### Assigned colors
+
+When "Color Source" = *Assigned*, you specify a color scheme and an offset into the color scheme.
+Colors from the color scheme are assigned to bars or bar segments sequentially, wrapping around to the start when all the colors have been used.
+
+For a simple bar chart (0 dimensions and N measures or 1 dimension and 1 measure), you can choose to have a single color or a different color for each bar.
+For single-color bar charts, you may use the offset in the color scheme to use any color within the scheme.
+
+### Calculated colors
+
+The calculated colors feature is somewhat more complicated, but allows full control of color assignment.
+This also provides *persistent colors*, where the color associated with a dimension does not change from chart to chart regardless of whether more or fewer dimension values are shown.
+
+In order to have the Qlik Sense engine calculate colors, formulas need to be specified as attributes of dimensions or measures.
+The engine will make the calculation and return the information together with the data to be rendered in the chart.
+A formula associated with a dimension can be entered in the text field "Dimension Attribute" at the bottom of the dimension information.
+Likewise, a formula associated with a measure can be entered in the text field "Measure Attribute" at the bottom of the measure information.
+The formula should not begin with an "=". 
+
+The result of the formula should be:
+
+* an integer which can be used as an offset into the color scheme (specify color attribute: *offset*)
+
+* a color which can be used directly (specify "Color attribute": *color value*).  This direct color value can be:
+
+  * a number which is converted to hex #nnnnnn for the browser,
+
+  * a text constant which can be understood by browsers: 'red', 'aqua', 'orange'
+
+  * a text rgb string: 'rgb(128,128,128)'
+
+#### Which attribute do I use?  A measure attribute or a dimension attribute?
+
+* 0 Dimensions, N Measures (simple bar graph) - specify a measure attribute
+
+* 1 Dimension, 1 Measure (simple bar graph) - specify a dimension attribute
+
+* 1 Dimension, N Measures (stacked bar graph) - specify a measure attribute
+
+* 2 Dimensions, 1 Measure (stacked bar graph) - specify a dimension attribute for 2nd dimension
+
+#### Persistent Colors
+
+When colors are assigned in the order that the data was received, you can have two charts where the colors for a particular dimension do not match.
+One chart may assign the colors differently due to the structure of the data.
+To prevent this from happening, you can use calculated colors to make sure there is always a single mapping of dimension to color.
+There are many ways to do this, but one way is to use the formula:
+
+    FieldIndex('dimName',dimName)-1
+
+To specify a dimension attribute returning an offset.  This uses the field load order.
+
+Another technique to associate dimensions with persistent colors is given by Henric Cronström.  See
+https://community.qlik.com/blogs/qlikviewdesignblog/2012/12/04/colors-in-charts
+
+* Matching Qlik Sense charts
+
+Through some experiments, I was not able to determine how Qlik Sense uses persistent colors.  
+For a dimension with a large number of values, the mapping to a color scheme appears to be sequential.
+However, if the dimension has only a few members, the mapping does not seem to follow a recognizable pattern.
+You can still make barsPlus colors match Qlik Sense charts on the same sheet, but it may require trial and error in creating a formula.
+If anyone is aware of the algorithm Qlik Sense uses to assign persistent colors, please let me know.
+
+### Examples of color attribute formulas
+
+In a dimension attribute
+
+    FieldIndex('dimName',dimName)-1
+    Pick(FieldIndex('dimName',dimName),red(),blue(),green(),rgb(128,0,30))
+    Pick(Match(Month,'Jan','Feb','Mar'),red(),blue(),green())
+    Color(FieldIndex('dimName',dimName))
+    If(dimName='My Company',red(),blue())
+
+In a measure attribute can use measure aggregate in expressions, constants, or dimension expressions
+
+    rgb(255*Sum(Measure1)/(Sum(Measure1)+Sum(Measure2)),0,0)
+
+In either dimension or measure attributes, (note string constants are evaluated by the browser, other formulas by the Qlik Sense engine).
+
+    'red'
+    'azure'
+    'rgb(123,87,22)'
+    '#d0d0d0'
+    rgb(rand()*255,rand()*255,rand()*255)
+    blue()
 
 ## Changing Defaults
 

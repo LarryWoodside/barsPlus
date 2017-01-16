@@ -12,6 +12,7 @@
  *	V1.0.0		L. Woodside		19-Dec-2016		Initial Release
  *  V1.1.0		L. Woodside		29-Dec-2016		Added text on bars
  *  V1.2.0		L. Woodside		07-Jan-2017		Allow multiple measures
+ *  V1.3.0		L. Woodside		15-Jan-2017		Improved color options
  *
 */
 function () {
@@ -19,12 +20,31 @@ function () {
 	var dimensions = {
 		uses: "dimensions",
 		min: 0,
-		max: 2
+		max: 2,
+		items: {
+			attribute: {
+				type: "string",
+				ref: "qAttributeExpressions.0.qExpression",
+				label: "Dimension attribute",
+				expression: "always",
+				defaultValue: ""
+			}
+		}
 	};
 	var measures = {
 		uses: "measures",
 		min: 1,
-		max: 10
+		max: 10,
+		items: {
+			attribute: {
+				type: "string",
+				component: "expression",
+				ref: "qAttributeExpressions.0.qExpression",
+				label: "Measure attribute",
+				expression: "always",
+				defaultValue: ""
+			}
+		}
 	};
 	var sorting = {
 		uses: "sorting"
@@ -163,6 +183,31 @@ function () {
 				type: "items",
 				label: "Colors and Legend",
 				items: {
+					colorSource: {
+						type: "string",
+						component: "dropdown",
+						label: "Color source",
+						ref: "props.colorSource",
+						defaultValue: "A",
+						options: [
+							{ value: "A", label: "Assigned"},
+							{ value: "C", label: "Calculated"}
+						]
+					},
+					colorAttr: {
+						type: "string",
+						component: "dropdown",
+						label: "Color attribute",
+						ref: "props.colorAttr",
+						defaultValue: "O",
+						options: [
+							{ value: "O", label: "Attribute is offset in scheme"},
+							{ value: "C", label: "Attribute is color value"}
+						],
+						show: function(data) {
+							return data.props.colorSource == "C";
+						}
+					},
 					colorScheme: {
 						type: "string",
 						component: "dropdown",
@@ -178,14 +223,20 @@ function () {
 							{ value: "custom100", label: "custom100"},
 							{ value: "qlikView18", label: "qlikView18"},
 							{ value: "qlikSense12", label: "qlikSense12"}
-						]
+						],
+						show: function(data) {
+							return data.props.colorSource != "C" || data.props.colorAttr != "C";
+						}
 					},
 					colorOffset: {
 						type: "number",
 						label: "Start offset in color scheme",
 						ref: "props.colorOffset",
 						defaultValue: 0,
-						expression: "optional"
+						expression: "optional",
+						show: function(data) {
+							return data.props.colorSource != "C";
+						}
 					},
 					singleColor: {
 						type: "boolean",
@@ -198,10 +249,10 @@ function () {
 							{ value: false, label: "Multi-color"}
 						],
 						show: function(data) { 
-							return data.qHyperCubeDef.qDimensions.length == 0 
+							return (data.qHyperCubeDef.qDimensions.length == 0 
 								|| (data.qHyperCubeDef.qDimensions.length == 1 
 										&& data.qHyperCubeDef.qMeasures.length == 1
-									); 
+							)) && data.props.colorSource != "C"; 
 						}
 					},
 					showLegend: {
@@ -234,10 +285,11 @@ function () {
 							{ value: "B", label: "Bottom"}
 						],
 						show: function(data) { 
-							return data.qHyperCubeDef.qDimensions.length > 1
-								|| (data.qHyperCubeDef.qDimensions.length == 1 
+							return data.props.showLegend 
+								&& 	(data.qHyperCubeDef.qDimensions.length > 1
+									|| (data.qHyperCubeDef.qDimensions.length == 1 
 										&& data.qHyperCubeDef.qMeasures.length > 1
-									); 
+								)); 
 						}
 					},
 					legendSize: {
@@ -252,10 +304,11 @@ function () {
 							{ value: "W", label: "Wide"}
 						],
 						show: function(data) { 
-							return data.qHyperCubeDef.qDimensions.length > 1
-								|| (data.qHyperCubeDef.qDimensions.length == 1 
+							return data.props.showLegend 
+								&&	(data.qHyperCubeDef.qDimensions.length > 1
+									|| (data.qHyperCubeDef.qDimensions.length == 1 
 										&& data.qHyperCubeDef.qMeasures.length > 1
-									); 
+								)); 
 						}
 					},
 					legendSpacing: {
@@ -270,8 +323,9 @@ function () {
 							{ value: "W", label: "Wide"}
 						],
 						show: function(data) { 
-							return (data.qHyperCubeDef.qDimensions.length > 1
-								|| (data.qHyperCubeDef.qDimensions.length == 1 
+							return data.props.showLegend 
+								&& (data.qHyperCubeDef.qDimensions.length > 1
+									|| (data.qHyperCubeDef.qDimensions.length == 1 
 										&& data.qHyperCubeDef.qMeasures.length > 1
 									)
 								) && (data.props.legendPosition == "T" || data.props.legendPosition == "B")

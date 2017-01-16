@@ -9,6 +9,7 @@
 	V1.0.0		L. Woodside		19-Dec-2016		Initial Release
 	V1.1.0		L. Woodside		29-Dec-2016		Added text on bars
 	V1.2.0		L. Woodside		07-Jan-2017		Allow multiple measures
+	V1.3.0		L. Woodside		15-Jan-2017		Improved color options
 
  Dependencies: d3.v3.js
 
@@ -32,8 +33,10 @@
 
  Colors and Legend
  
+ colorSource		A - Assigned, C - Calculated
+ colorAttr			Attribute is: O - an offset in scheme, C - a color value
  colorScheme		Named color scheme
- colorOffset		Offset of first color in color scheme
+ colorOffset		Offset of first color in color scheme (colorSource = Assigned)
  singleColor		Whether to use single color for 1-dimensional bars
  showLegend			Whether to show the legend
  legendPosition		Legend position: T - top, R - right, B - bottom, L - left
@@ -112,6 +115,7 @@ var ldwbarsPlus = {
  * Output:	g.data
  *			g.flatData
  *			g.allDim2
+ *			g.allCol2
  *			g.nDims
  *			g.deltas
 */
@@ -124,7 +128,7 @@ initData: function() {
 	If two dimensions and multiple measures specified, ignore all but the first measure
 	*/
 	var g = this;
-	var struc = [], flatData = [], q = [], deltas = [], inData = [];
+	var struc = [], flatData = [], q = [], r = [], deltas = [], inData = [];
 
 	if (!g.rawData[0]) return; // sometimes undefined
 	if (g.defDims + g.defMeas != g.rawData[0].length) return;  // sometimes mismatched
@@ -153,6 +157,35 @@ initData: function() {
 	else {
 		inData = g.rawData;  // Process as in previous version
 	}
+	// If calculated color specified, must have provided Attribute
+	// otherwise set back to assigned mode
+
+	var cx = g.defDims == 1 ? (g.defMeas == 1 ? 0 : 2) : 1; // index for attribute
+	if (g.colorSource == "C" && !inData[0][cx].qAttrExps) g.colorSource = "A";
+
+	// Function to get dimension/measure attribute for color
+	var cf = function(e) {
+		var cn = 0;
+		if (g.colorSource == "C") {
+			var cv = e[cx].qAttrExps.qValues[0].qNum;
+			if (!isNaN(cv)) 
+				cn = Math.floor(Math.abs(cv));
+			if (g.colorAttr == "C") {
+				// if text attribute exists, use it
+				if (e[cx].qAttrExps.qValues[0].qText) {
+					cn = e[cx].qAttrExps.qValues[0].qText;
+				}
+				else {
+					// number present, convert to hex
+					cv = cv.toString(16);
+					if (cv.length > 6) cv = cv.substring(cv.length-6);
+					cn = "#" + "000000".substring(0,6-cv.length) + cv;
+				}
+			}
+		}
+		return cn;
+	}	
+
 	// Process one dimension data
 	if (inData[0].length == 2) {
 		g.nDims = 1;
@@ -170,13 +203,16 @@ initData: function() {
 				});
 			if(q.indexOf(d[0].qText) == -1) {
 				q.push(d[0].qText);
+				r.push(cf(d));
 			}
 		});
 		g.data = struc;
 		g.flatData = flatData;
 		g.allDim2 = q;
+		g.allCol2 = r;
 		return;		
 	};
+	
 	// Process two dimensional data
 	g.nDims = 2;
 
@@ -188,6 +224,7 @@ initData: function() {
 		}
 		if (q.indexOf(d[1].qText) == -1) {
 			q.push(d[1].qText);
+			r.push(cf(d));
 		}
 		if (d[0].qText != p1) {
 			p1 = d[0].qText;
@@ -208,9 +245,15 @@ initData: function() {
 	});
 	// Topological sort will throw an error if inconsistent data (sorting by measure)
 	// Just ignore errors and use original sort order
-	var qs;
+	var qs, ps, rs = [];
 	try {
+		ps = q.slice();
 		qs = this.toposort(q,edges);
+		// Replicate qs order in r
+		for (var i = 0; i < ps.length; i++) {
+			rs.push(r[ps.indexOf(qs[i])]);
+		}
+		r = rs;
 	}
 	catch(err) {
 		qs = q;
@@ -292,6 +335,7 @@ initData: function() {
 	g.data = struc;
 	g.flatData = flatData;
 	g.allDim2 = q;
+	g.allCol2 = r;
 	g.deltas = deltas;
 },
 
@@ -478,10 +522,22 @@ initChart: function() {
 	else
 		ca = d3.scale[g.colorScheme]().range();
 	g.colorOffset %= ca.length;
-	
-	if (g.nDims == 1 && g.singleColor) {
+	// define various ways to get color
+	if (g.nDims == 1 && g.colorSource != "C" && g.singleColor) {
 		var rc = ca[g.colorOffset];
 		g.cScale = function(d) { return rc; };
+	}
+	else if (g.colorSource == "C") {
+		if (g.colorAttr == "O") {  // color from calculated offset
+			g.cScale = function(d) {
+				return ca[g.allCol2[g.allDim2.indexOf(d)] % ca.length];
+			}
+		}
+		else { // color is direct value
+			g.cScale = function(d) {
+				return g.allCol2[g.allDim2.indexOf(d)];
+			}
+		}
 	}
 	else {
 		g.cScale = d3.scale.ordinal().range(
