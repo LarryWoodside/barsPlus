@@ -11,7 +11,7 @@ barsPlus is a single extension that allows creating bar charts (horizontal and v
 | ------- | ------------- | ----------- | ------------------ |
 | V1.1.0  | L. Woodside   | 29-Dec-2016 | Added text on bars |
 | V1.2.0  | L. Woodside   | 07-Jan-2017 | Support for multiple measures |
-| V1.3.0  | L. Woodside   | 07-Jan-2017 | Improved color options |
+| V1.3.0  | L. Woodside   | 16-Jan-2017 | Improved color options |
 
 ## Features
 
@@ -32,7 +32,7 @@ barsPlus is a single extension that allows creating bar charts (horizontal and v
 * multiple options available for fine tuning appearance
 * text inside bars: number, dimension text, or percentage (100% bars)
 * bar total lables: number, dimension text
-* fully flexible colors, expressions can be used to determine colors to support persistent colors
+* fully flexible colors, expressions can be used to determine colors and support persistent colors
 
 ## Installation
 
@@ -241,7 +241,7 @@ Need I say that the *bounce* style should not be used in production applications
 
 There are two ways to assign colors to bars or bar segments.  
 You may let the colors be assigned automatically by selecting "Color Source" = *Assigned*, or you can specify "Color Source" = *Calculated* to use a formula to determine the color.
-Please see the sheet "Colors Enhancement" in the Qlik Sense application BarsPlus.qvf in the app subfolder.
+Please see the sheet "Colors Enhancement" in the Qlik Sense application **BarsPlus.qvf** in the app subfolder.
 
 ### Assigned colors
 
@@ -261,6 +261,8 @@ The engine will make the calculation and return the information together with th
 A formula associated with a dimension can be entered in the text field "Dimension Attribute" at the bottom of the dimension information.
 Likewise, a formula associated with a measure can be entered in the text field "Measure Attribute" at the bottom of the measure information.
 The formula should not begin with an "=". 
+
+![alt text](screenshots/dimensionAttribute.png "Location of dimension attribute text box")
 
 The result of the formula should be:
 
@@ -308,6 +310,8 @@ If anyone is aware of the algorithm Qlik Sense uses to assign persistent colors,
 
 ### Examples of color attribute formulas
 
+Please also see the sheet "Colors Enhancement" in the Qlik Sense application **BarsPlus.qvf** in the app subfolder.
+
 In a dimension attribute
 
     FieldIndex('dimName',dimName)-1
@@ -320,7 +324,7 @@ In a measure attribute can use measure aggregate in expressions, constants, or d
 
     rgb(255*Sum(Measure1)/(Sum(Measure1)+Sum(Measure2)),0,0)
 
-In either dimension or measure attributes, (note string constants are evaluated by the browser, other formulas by the Qlik Sense engine).
+Following are examples for either dimension or measure attributes, (note string constants are evaluated by the browser, other formulas by the Qlik Sense engine).
 
     'red'
     'azure'
