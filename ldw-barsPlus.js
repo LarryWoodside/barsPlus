@@ -10,6 +10,7 @@
 	V1.1.0		L. Woodside		29-Dec-2016		Added text on bars
 	V1.2.0		L. Woodside		07-Jan-2017		Allow multiple measures
 	V1.3.0		L. Woodside		15-Jan-2017		Improved color options
+	V1.3.1		L. Woodside		27-Jan-2017		Fix problem with legend properties
 
  Dependencies: d3.v3.js
 
@@ -384,7 +385,7 @@ initChart: function() {
 	g.lgn.txtOff = g.lgn.box[0] + g.lgn.pad + g.lgn.sep;
 	
 	// adjust for legend if any
-	g.lgn.use = (g.showLegend && g.nDims == 2) ? g.legendPosition : "";
+	g.lgn.use = g.showLegend ? g.legendPosition : "";
 	if (g.lgn.use) {
 		if (g.lgn.use == "L" || g.lgn.use == "R") {
 			if (innerWidth <= g.lgn.minDim[0]) {
