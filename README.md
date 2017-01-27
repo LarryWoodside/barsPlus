@@ -12,6 +12,7 @@ barsPlus is a single extension that allows creating bar charts (horizontal and v
 | V1.1.0  | L. Woodside   | 29-Dec-2016 | Added text on bars |
 | V1.2.0  | L. Woodside   | 07-Jan-2017 | Support for multiple measures |
 | V1.3.0  | L. Woodside   | 16-Jan-2017 | Improved color options |
+| V1.3.1  | L. Woodside   | 27-Jan-2017 | Fixed problem with legend properties |
 
 ## Features
 
